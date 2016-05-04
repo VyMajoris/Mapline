@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "162284491737",
+    "project_id": "graphite-store-130123"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162284491737:android:4b5ac92138ec1d92",
+        "android_client_info": {
+          "package_name": "br.com.fiap.pizza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162284491737-1oru0av2s9vtk58oqsqqgd3n7b1uv9p6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.fiap.pizza",
+            "certificate_hash": "27FFA2087B9D40A0F9CBB3671A49508A391A4C61"
+          }
+        },
+        {
+          "client_id": "162284491737-o570jicgc2ckmgfeflg2rcmcfaa7goi2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3tFGW61Jcs9rsUCtZsOW7YILtznPFB2k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
