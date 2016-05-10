@@ -5,12 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/content"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="br.com.fiap.pizza.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    >
+
+
+
+    <com.yqritc.scalablevideoview.ScalableVideoView
+        android:id="@+id/main_background_videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:scalableType="centerCrop"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Faça o login e clique no mapa para criar linhas"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+
+        android:layout_marginTop="106dp"
+        android:textColor="@color/white"
+        android:elegantTextHeight="false"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:shadowColor="@color/colorAccent"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2" />
+
+    <Button
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OK!"
+        android:id="@+id/main_button"
+        android:layout_marginBottom="134dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="19dp"
+        android:layout_marginLeft="19dp"
+        android:background="#d1171717"
+        android:clickable="true"
+        android:textColor="@color/white"
+/>
+
 
 </RelativeLayout>

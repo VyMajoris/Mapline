@@ -1,9 +1,12 @@
 package br.com.fiap.pizza;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,19 +17,29 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.Plus;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
 
 
 /**
@@ -35,19 +48,31 @@ import org.greenrobot.eventbus.Subscribe;
  * {@link LoginFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnectionFailedListener,
+public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,
         OnClickListener {
 
     private OnFragmentInteractionListener mListener;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
+
     private GoogleApiClient mGoogleApiClient;
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
 
     View view;
+    private boolean mGoogleIntentInProgress;
 
+    private ConnectionResult mGoogleConnectionResult;
+
+    boolean isLogged = false;
+    String name;
+    String email;
+    Uri avatar;
+
+    private ProgressDialog mAuthProgressDialog;
+
+    Firebase fireRef;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -58,10 +83,15 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        fireRef = new Firebase("https://torrid-fire-6287.firebaseio.com");
+        view = inflater.inflate(R.layout.fragment_login, container, false);
 
-          view = inflater.inflate(R.layout.fragment_login, container, false);
+        mAuthProgressDialog = new ProgressDialog(getActivity());
+        mAuthProgressDialog.setTitle("Loading");
+        mAuthProgressDialog.setMessage("Authenticating with Firebase...");
+        mAuthProgressDialog.setCancelable(false);
 
-
+        validateServerClientID();
         // Views
         mStatusTextView = (TextView) view.findViewById(R.id.status);
 
@@ -74,6 +104,7 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
         // [END configure_signin]
@@ -82,7 +113,8 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                //.enableAutoManage(getActivity() /* FragmentActivity */, null /* OnConnectionFailedListener */)
+                // .enableAutoManage(getActivity() /* FragmentActivity */, null /* OnConnectionFailedListener */)
+                .addOnConnectionFailedListener(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         // [END build_client]
@@ -103,12 +135,39 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
         return view;
 
     }
+    private static final int RC_GET_TOKEN = 9002;
+
+    private void getIdToken() {
+        // Show an account picker to let the user choose a Google account from the device.
+        // If the GoogleSignInOptions only asks for IDToken and/or profile and/or email then no
+        // consent screen will be shown here.
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_GET_TOKEN);
+    }
+
+    private void resolveSignInError() {
+        if (mGoogleConnectionResult.hasResolution()) {
+            try {
+                mGoogleIntentInProgress = true;
+                mGoogleConnectionResult.startResolutionForResult(getActivity(), RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent.  Return to the default
+                // state and attempt to connect to get an updated ConnectionResult.
+                mGoogleIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+
+
+
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        if (mGoogleApiClient != null)
+        if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
+        }
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
@@ -131,12 +190,46 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
             });
         }
     }
+
     @Subscribe
-    public void onMessageEvent(MessageEvent event){
-        System.out.println("onMessageEvent");
-        if (event.resultCode == RC_SIGN_IN) {
+    public void onMessageEvent(OnActivityResultEvent event) {
+        System.out.println("OnActivityResultEvent");
+        if (event.requestCode == RC_SIGN_IN) {
+            System.out.println("RC_SIGN_IN");
+            mGoogleIntentInProgress  = false;
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(event.data);
-            // handleSignInResult(result);
+            handleSignInResult(result);
+        }
+        if (event.requestCode == RC_GET_TOKEN) {
+            // [START get_id_token]
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(event.data);
+            Log.d(TAG, "onActivityResult:GET_TOKEN:success:" + result.getStatus().isSuccess());
+
+            if (result.isSuccess()) {
+                GoogleSignInAccount acct = result.getSignInAccount();
+                String idToken = acct.getIdToken();
+
+                // Show signed-in UI.
+                Log.d(TAG, "idToken:" + idToken);
+
+                updateUI(true);
+
+                // TODO(user): send token to server and validate server-side
+            } else {
+                // Show signed-out UI.
+                updateUI(false);
+            }
+            // [END get_id_token]
+        }
+    }
+    private void validateServerClientID() {
+        String serverClientId = getString(R.string.server_client_id);
+        String suffix = ".apps.googleusercontent.com";
+        if (!serverClientId.trim().endsWith(suffix)) {
+            String message = "Invalid server client ID in strings.xml, must end with " + suffix;
+
+            Log.w(TAG, message);
+
         }
     }
 
@@ -157,12 +250,51 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
         }
     }
 
+
+
+
+
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+
+
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
+
+            isLogged = true;
+
+
+
+
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+
+
+            System.out.println("login");
+
+            System.out.println(acct.getIdToken());
+            System.out.println(acct.getId());
+            System.out.println(acct.getGrantedScopes());
+            System.out.println(acct.getServerAuthCode());
+
+
+
+
+            email = acct.getEmail();
+            name = acct.getDisplayName();
+            avatar = acct.getPhotoUrl();
+
+
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
@@ -172,7 +304,7 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        getActivity().startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     // [END signIn]
 
@@ -183,6 +315,10 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
+
+                        isLogged = false;
+
+
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
@@ -201,13 +337,13 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
     }
 
 
-
     private void revokeAccess() {
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
+                        isLogged = false;
                         updateUI(false);
                         // [END_EXCLUDE]
                     }
@@ -221,7 +357,6 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
-
 
 
     private void showProgressDialog() {
@@ -267,11 +402,9 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and nome
         void onFragmentInteraction(Uri uri);
     }
-
-
 
 
     private void hideProgressDialog() {
@@ -282,14 +415,22 @@ public class LoginFragment extends Fragment implements  GoogleApiClient.OnConnec
 
     private void updateUI(boolean signedIn) {
         if (signedIn) {
+
             view.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             view.findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            updateUserInfo();
         } else {
             mStatusTextView.setText(R.string.signed_out);
 
             view.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             view.findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            updateUserInfo();
         }
+    }
+
+
+    public void updateUserInfo() {
+        EventBus.getDefault().post(new OnLoginChange(isLogged, name, email, avatar));
     }
 
 }

@@ -15,8 +15,6 @@
     <string name="login_fragment">Login Fragment</string>
 
 
-
-
     <string name="title_activity_maps">Map</string>
 
     <string name="title_text">Google Sign-In\nQuickstart</string>
@@ -61,5 +59,13 @@
     <!-- TODO(user): replace with your real server client ID -->
     <!-- Server Client ID.  This should be a valid Web OAuth 2.0 Client ID obtained
          from https://console.developers.google.com/ -->
-    <string name="server_client_id">AIzaSyC3tFGW61Jcs9rsUCtZsOW7YILtznPFB2k</string>
+
+    <!--FIAP -->
+    <!-- string name="server_client_id">AIzaSyC3tFGW61Jcs9rsUCtZsOW7YILtznPFB2k</string !-->
+
+    <!--casa -->
+    <string name="server_client_id">414968582691-a3mr7mm6p50fie3ren92toop1sp8734l.apps.googleusercontent.com</string>
+    <string name="login_needed">Você precisa estar logado para criar novas linhas!</string>
+    <string name="no_more_points">Não há mais pontos para deletar</string>
+
 </resources>
