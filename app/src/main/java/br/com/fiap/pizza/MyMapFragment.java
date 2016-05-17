@@ -119,15 +119,6 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
 
         fam = (FloatingActionMenu) view.findViewById(R.id.fam);
 
-        FloatingActionButton fabMprefs = (FloatingActionButton) view.findViewById(R.id.clear_mPrefs_button);
-        fabMprefs.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mPrefs.edit().clear().apply();
-            }
-        });
-
 
         FloatingActionButton fabAll = (FloatingActionButton) view.findViewById(R.id.delete_all_button);
         fabAll.setOnClickListener(new View.OnClickListener() {
@@ -241,11 +232,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildAdded(DataSnapshot snap, String s) {
 
-                System.out.println(snap.getKey() + "___" + polylineId);
-
                 if (!snap.getKey().equals(polylineId)) {
-                    System.out.println(snap.getKey() + " ___ " + polylineId);
-                    System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
                     polylineOptionsMap.put(snap.getKey(), new PolylineOptions());
                     polylineHashMap.put(snap.getKey(), new ArrayList<Polyline>());
