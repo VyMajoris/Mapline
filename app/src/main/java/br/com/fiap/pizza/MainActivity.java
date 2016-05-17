@@ -7,11 +7,10 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.view.SurfaceHolder;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,19 +18,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoginFragment.OnFragmentInteractionListener, SurfaceHolder.Callback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, SurfaceHolder.Callback {
 
 
     private static final int RC_SIGN_IN = 9001;
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity
 
     SharedPreferences mPrefs;
 
+
+    LatLng latLng = null;
     Bundle savedInstanceState;
 
     MyMapFragment myMapFragment;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
 
     ScalableVideoView mVideoView;
+    private boolean isMapReady = false;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,17 +90,15 @@ public class MainActivity extends AppCompatActivity
             System.out.println("ERROR BACKGROUND");
         }
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_CALENDAR);
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -151,12 +153,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateUserInfoFromPrefs() {
-        mPrefs.edit()
-                .putString("email", email)
-                .putString("nome", nome)
-                // .putString("avatar", avatar.toString())
-                .putBoolean("isLogged", isLogged)
-                .apply();
+        mPrefs.edit().putString("email", email).putString("nome", nome).putString("avatar", avatar.toString()).putBoolean("isLogged", isLogged).apply();
     }
 
     public void getUserInfoFromPrefs() {
@@ -220,50 +217,103 @@ public class MainActivity extends AppCompatActivity
 
             findViewById(R.id.main_button).setVisibility(View.GONE);
 
-            if(fragmentManager.findFragmentByTag("map") != null) {
+            if (fragmentManager.findFragmentByTag("map") != null) {
                 //if the fragment exists, show it.
                 fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("map")).commit();
             } else {
                 //if the fragment does not exist, add it to fragment manager.
                 fragmentManager.beginTransaction().add(R.id.content, new MyMapFragment(), "map").commit();
             }
-            if(fragmentManager.findFragmentByTag("login") != null){
+            if (fragmentManager.findFragmentByTag("login") != null) {
                 //if the other fragment is visible, hide it.
                 fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("login")).commit();
+
             }
-
-
-
+            if (fragmentManager.findFragmentByTag("list") != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("list")).commit();
+            }
 
         } else if (id == R.id.nav_account) {
 
             findViewById(R.id.main_button).setVisibility(View.GONE);
 
-            if(fragmentManager.findFragmentByTag("login") != null) {
+            if (fragmentManager.findFragmentByTag("login") != null) {
                 //if the fragment exists, show it.
                 fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("login")).commit();
             } else {
                 //if the fragment does not exist, add it to fragment manager.
                 fragmentManager.beginTransaction().add(R.id.content, new LoginFragment(), "login").commit();
             }
-            if(fragmentManager.findFragmentByTag("map") != null){
+            if (fragmentManager.findFragmentByTag("map") != null) {
                 //if the other fragment is visible, hide it.
                 fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("map")).commit();
             }
+            if (fragmentManager.findFragmentByTag("list") != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("list")).commit();
+            }
+        } else if (id == R.id.nav_list) {
+
+            findViewById(R.id.main_button).setVisibility(View.GONE);
+
+            if (fragmentManager.findFragmentByTag("list") != null) {
+                //if the fragment exists, show it.
+                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("list")).commit();
+            } else {
+                //if the fragment does not exist, add it to fragment manager.
+                fragmentManager.beginTransaction().add(R.id.content, new ItemFragment(), "list").commit();
+            }
+            if (fragmentManager.findFragmentByTag("map") != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("map")).commit();
+            }
+            if (fragmentManager.findFragmentByTag("login") != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("login")).commit();
+            }
         }
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction() {
+        isMapReady = true;
+        if (latLng != null && myMapFragment.isAdded()) {
+            myMapFragment.updateMapCamera(latLng);
+        }
 
     }
+
+
+    public void showUserLineOnMap(LatLng latLng) {
+        this.latLng = latLng;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag("map") != null) {
+            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("map")).commit();
+            myMapFragment = (MyMapFragment) fragmentManager.findFragmentByTag("map");
+        } else {
+            myMapFragment = new MyMapFragment();
+            fragmentManager.beginTransaction().add(R.id.content, myMapFragment, "map").commit();
+        }
+        if (fragmentManager.findFragmentByTag("login") != null) {
+            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("login")).commit();
+        }
+        if (fragmentManager.findFragmentByTag("list") != null) {
+            //if the other fragment is visible, hide it.
+            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("list")).commit();
+        }
+
+        if (latLng != null && myMapFragment.isAdded() && isMapReady) {
+            myMapFragment.updateMapCamera(latLng);
+        }
+
+        navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

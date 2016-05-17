@@ -18,6 +18,8 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -43,6 +45,8 @@ import java.util.Set;
  */
 public class MyMapFragment extends Fragment implements OnMapReadyCallback {
 
+    OnMyMapReady mCallback;
+
     Random rnd = new Random();
     int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
     SharedPreferences mPrefs;
@@ -67,6 +71,11 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        try {
+            mCallback = (OnMyMapReady) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnHeadlineSelectedListener");
+        }
 
     }
 
@@ -76,6 +85,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
         view = inflater.inflate(R.layout.fragment_map, container, false);
         final SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
         mPrefs = getActivity().getSharedPreferences("Google_firebase", getActivity().MODE_PRIVATE);
+
         this.setRetainInstance(true);
         mapFragment.getMapAsync(this);
         listOfLines = new HashMap<>();
@@ -85,22 +95,24 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
 
         if (mPrefs.getString("myPolylineRefKey", null) == null) {
 
+            System.out.println("NULL COLOR: " + color);
+            mPrefs.edit().putInt("color", color).apply();
 
-            System.out.println("NULL REFFFF");
             myPolylineRef = mapRef.push();
             mPrefs.edit().putString("myPolylineRefKey", myPolylineRef.getKey()).apply();
 
         } else {
+            color = mPrefs.getInt("color", 0);
+
             myPolylineRef = mapRef.child(mPrefs.getString("myPolylineRefKey", null));
             Set<String> myLatLngRefKeySet = mPrefs.getStringSet("myLatLngRefKeySet", null);
             if (myLatLngRefKeySet != null) {
                 for (String key : myLatLngRefKeySet) {
-                    System.out.println("key------ "+key);
+
                     myLatLngRefList.add(myPolylineRef.child(key));
                 }
             }
         }
-
 
 
         polylineId = myPolylineRef.getKey();
@@ -139,7 +151,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                         myLatLngRefList.clear();
                         myPolilines.clear();
                         myPolylineRef.removeValue(null);
-                        mPrefs.edit().remove("myPolylineOptions").remove("myPolylineRefKey").apply();
+                        mPrefs.edit().remove("myPolylineOptions").remove("myPolylineRefKey").remove("myLatLngRefKeySet").apply();
 
                     }
                 } else {
@@ -174,47 +186,39 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                 if (mPrefs.getBoolean("isLogged", false)) {
                     if (myPolylineOptions == null) {
                         myPolylineOptions = new PolylineOptions();
+
                         myPolylineOptions.color(color);
                     }
 
-
                     myLatLngRef = myPolylineRef.push();
-
 
                     if (myMarker != null) {
                         myMarker.remove();
                     }
 
-
                     myPolylineOptions.add(latLng);
-
-
                     myMarker = map.addMarker(new MarkerOptions().position(getCenter(myPolylineOptions.getPoints())));
                     myPolilines.add(map.addPolyline(myPolylineOptions));
-
-
                     myLatLngRefList.add(myLatLngRef);
 
-                    myPolylineRef.child("color").setValue(color);
-
+                    Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
+                    myPolylineRef.child("details").setValue(details);
 
                     myLatLngRef.setValue(new Gson().toJson(latLng));
-
-
                     Set<String> myLatLngJsonSet = new HashSet<String>();
 
-
                     myLatLngJsonSet.add(new Gson().toJson(latLng));
-                    System.out.println("ADDING KEY: "+latLng);
+
 
                     mPrefs.edit().putString("myPolylineOptions", new Gson().toJson(myPolylineOptions)).apply();
 
                     Set<String> myLatLngRefKeySet = new HashSet<String>();
                     for (Firebase latLngRef : myLatLngRefList) {
-                        System.out.println("ADDING KEY: "+latLngRef);
+                        System.out.println("ADDING KEY: " + latLngRef);
                         myLatLngRefKeySet.add(latLngRef.getKey());
                     }
                     mPrefs.edit().putStringSet("myLatLngRefKeySet", myLatLngRefKeySet).apply();
+                    mPrefs.edit().putString("myPolylineRefKey", myPolylineRef.getKey()).apply();
 
 
                 } else {
@@ -222,6 +226,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                 }
 
             }
+
 
         });
 
@@ -247,10 +252,12 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                     latLngHashMap.put(snap.getKey(), new ArrayList<LatLng>());
                     markerHashMap.put(snap.getKey(), null);
 
-                    snap.child("color").getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                    snap.child("details").getRef().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            colorMap.put(dataSnapshot.getRef().getParent().getKey(), ((Long) dataSnapshot.getValue()).intValue());
+
+                            int color = Integer.valueOf(dataSnapshot.child("color").getValue().toString());
+                            colorMap.put(dataSnapshot.getRef().getParent().getKey(), color);
                         }
 
                         @Override
@@ -258,13 +265,14 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                         }
                     });
 
-
                     mapRef.child(snap.getKey()).addChildEventListener(new ChildEventListener() {
+
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                             String parentKey = dataSnapshot.getRef().getParent().getKey();
                             try {
-                                if (!dataSnapshot.getKey().equals("color")) {
+                                if (!dataSnapshot.getKey().equals("details")) {
 
                                     if (markerHashMap.get(parentKey) != null) {
                                         markerHashMap.get(parentKey).remove();
@@ -272,7 +280,9 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                                     }
 
                                     LatLng latLng = new Gson().fromJson((String) dataSnapshot.getValue(), LatLng.class);
+
                                     polylineOptionsMap.put(parentKey, polylineOptionsMap.get(parentKey).color(colorMap.get(parentKey)).add(latLng));
+
                                     List<Polyline> polyTempArray = polylineHashMap.get(parentKey);
                                     polyTempArray.add(map.addPolyline(polylineOptionsMap.get(parentKey)));
                                     polylineHashMap.put(parentKey, polyTempArray);
@@ -367,6 +377,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         mMap = map;
+
         final FloatingActionButton fabLast = (FloatingActionButton) view.findViewById(R.id.deletar_last_button);
         fabLast.setOnClickListener(new View.OnClickListener()
 
@@ -413,6 +424,9 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                         if (myLatLngRefList.size() > 0) {
                             myMarker = map.addMarker(new MarkerOptions().position(getCenter(myPolylineOptions.getPoints())));
 
+                            Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
+                            myPolylineRef.child("details").setValue(details);
+
                         }
 
 
@@ -435,7 +449,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                             myLatLngRefList.clear();
                             myPolilines.clear();
                             myPolylineRef.removeValue(null);
-                            mPrefs.edit().remove("myPolylineOptions").remove("myPolylineRefKey").apply();
+                            mPrefs.edit().remove("myPolylineOptions").remove("myLatLngRefKeySet").remove("myPolylineRefKey").apply();
                         }
 
                     } else {
@@ -448,6 +462,8 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+
+        mCallback.onFragmentInteraction();
     }
 
     private boolean removeLastLatLng(LatLng latLng, ListIterator it) {
@@ -536,6 +552,20 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
+    }
+
+
+    public void updateMapCamera(LatLng latLng) {
+        CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(4);
+
+        mMap.moveCamera(center);
+        mMap.animateCamera(zoom);
+    }
+
+    public interface OnMyMapReady {
+        // TODO: Update argument type and nome
+        void onFragmentInteraction();
     }
 
 

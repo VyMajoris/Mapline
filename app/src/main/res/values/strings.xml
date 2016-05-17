@@ -65,7 +65,10 @@
 
     <!--casa -->
     <string name="server_client_id">414968582691-a3mr7mm6p50fie3ren92toop1sp8734l.apps.googleusercontent.com</string>
+
+
     <string name="login_needed">Você precisa estar logado para criar novas linhas!</string>
     <string name="no_more_points">Não há mais pontos para deletar</string>
+    <string name="lista_de_linhas">Lista de Linhas</string>
 
 </resources>

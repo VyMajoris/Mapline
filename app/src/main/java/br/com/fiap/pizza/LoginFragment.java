@@ -51,7 +51,6 @@ import java.io.IOException;
 public class LoginFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,
         OnClickListener {
 
-    private OnFragmentInteractionListener mListener;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -243,16 +242,6 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         super.onStop();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-
-
 
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(getActivity())
@@ -328,12 +317,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
 
@@ -372,7 +356,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
         mGoogleApiClient = null;
     }
 

@@ -1,0 +1,108 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:autofit="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="wrap_content"
+                                                 android:padding="16dp"
+    >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+
+        <RelativeLayout
+            android:id="@+id/cardheader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:layout_margin="10dp"
+                android:src="@android:drawable/sym_def_app_icon"
+                />
+
+                <me.grantland.widget.AutofitTextView
+                    android:id="@+id/cardname"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+
+                    android:layout_marginRight="10dp"
+                    android:enabled="false"
+                    android:gravity="top"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_grey_600"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    autofit:minTextSize="16sp"
+                    android:layout_toRightOf="@+id/avatar"
+                    android:layout_toEndOf="@+id/avatar"
+                    android:layout_alignTop="@+id/avatar"/>
+
+                <me.grantland.widget.AutofitTextView
+                    android:id="@+id/cardemail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/blue_grey_600"
+                    android:textSize="40sp"
+                    android:textStyle="italic"
+                    autofit:minTextSize="16sp"
+                    android:layout_alignBottom="@+id/avatar"
+                    android:layout_alignLeft="@+id/cardname"
+                    android:layout_alignStart="@+id/cardname"
+                    android:layout_below="@+id/cardname"
+                    android:layout_toRightOf="@+id/fab_email"
+                    android:layout_alignRight="@+id/cardname"
+                    android:layout_alignEnd="@+id/cardname"/>
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_gravity="center_vertical"
+
+
+                android:clickable="true"
+                android:src="@drawable/ic_email"
+                android:tint="@android:color/white"
+                app:backgroundTint="@color/blue_grey_600"
+                android:layout_centerVertical="true"
+                android:layout_alignRight="@+id/cardname"
+                android:layout_alignEnd="@+id/cardname"/>
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+
+                android:layout_below="@+id/avatar"
+                android:layout_marginTop="8dp"
+                app:liteMode="true"
+                app:mapType="normal"
+
+                />
+
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+</android.support.design.widget.CoordinatorLayout>
