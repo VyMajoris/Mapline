@@ -31,14 +31,16 @@ import com.yqritc.scalablevideoview.ScalableVideoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import br.com.fiap.pizza.util.OnActivityResultEvent;
-import br.com.fiap.pizza.util.OnLoginChange;
 import br.com.fiap.pizza.R;
 import br.com.fiap.pizza.fragment.ItemFragment;
 import br.com.fiap.pizza.fragment.LoginFragment;
 import br.com.fiap.pizza.fragment.MyMapFragment;
+import br.com.fiap.pizza.service.MyFirebaseService;
+import br.com.fiap.pizza.util.MyFirebaseMapUtil;
+import br.com.fiap.pizza.util.OnActivityResultEvent;
+import br.com.fiap.pizza.util.OnLoginChange;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, SurfaceHolder.Callback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, MyFirebaseMapUtil.OnMyFirebaseReady, SurfaceHolder.Callback {
 
 
     private static final int RC_SIGN_IN = 9001;
@@ -69,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPrefs = this.getSharedPreferences("Google_firebase", this.MODE_PRIVATE);
+        Firebase.setAndroidContext(this);
+        MyFirebaseMapUtil.init(this, mPrefs);
         this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
         this.myMapFragment = new MyMapFragment();
@@ -335,5 +340,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
 
+    }
+
+    @Override
+    public void onMyFireabseReady() {
+        System.out.println("FIRE READYYYYYYYYYYYYYY");
+        Thread t = new Thread() {
+            public void run() {
+
+                Intent serviceIntent = new Intent(getApplicationContext(), MyFirebaseService.class);
+                startService(serviceIntent);
+            }
+        };
+        t.start();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopService(new Intent(this, MyFirebaseService.class));
     }
 }

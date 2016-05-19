@@ -55,17 +55,19 @@ public class MyFabLastClickListener implements  View.OnClickListener{
     public void onClick(View view) {
         if (mPrefs.getBoolean("isLogged", false)) {
 
-            for (Polyline line : myPolilines) {
-                line.remove();
-            }
 
-            myPolilines.clear();
-            if (myMarker != null) {
-                myMarker.remove();
-
-            }
             if (!myLatLngRefList.isEmpty()) {
-                System.out.println("bbbbb" + myLatLngRefList);
+
+                for (Polyline line : myPolilines) {
+                    line.remove();
+                }
+
+                myPolilines.clear();
+                if (myMarker != null) {
+                    myMarker.remove();
+
+                }
+
                 List<LatLng> latLngs = myPolylineOptions.getPoints();
 
                 if (latLngs.size() != 0) {
