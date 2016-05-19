@@ -1,12 +1,12 @@
-package br.com.fiap.pizza;
+package br.com.fiap.pizza.util;
 
 import android.content.Intent;
 
 public class OnActivityResultEvent {
-    static Intent data;
+    public static  Intent data;
 
-    static int requestCode;
-    static int resultCode;
+    public static int requestCode;
+    public static int resultCode;
     public OnActivityResultEvent(Intent data, int requestCode, int resultCode) {
 
         this.data = data;

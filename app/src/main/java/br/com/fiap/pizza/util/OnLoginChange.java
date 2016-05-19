@@ -1,13 +1,13 @@
-package br.com.fiap.pizza;
+package br.com.fiap.pizza.util;
 
 
 import android.net.Uri;
 
 public class OnLoginChange {
-    static boolean isLogged;
-    static String name;
-    static  String email;
-    static Uri avatar;
+    public static boolean isLogged;
+    public static String name;
+    public static  String email;
+    public static Uri avatar;
 
 
     public OnLoginChange(boolean isLogged, String name, String email, Uri avatar) {

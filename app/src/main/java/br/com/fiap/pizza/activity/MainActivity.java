@@ -1,4 +1,4 @@
-package br.com.fiap.pizza;
+package br.com.fiap.pizza.activity;
 
 
 import android.Manifest;
@@ -30,6 +30,13 @@ import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import br.com.fiap.pizza.util.OnActivityResultEvent;
+import br.com.fiap.pizza.util.OnLoginChange;
+import br.com.fiap.pizza.R;
+import br.com.fiap.pizza.fragment.ItemFragment;
+import br.com.fiap.pizza.fragment.LoginFragment;
+import br.com.fiap.pizza.fragment.MyMapFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, SurfaceHolder.Callback {
 
@@ -67,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myMapFragment = new MyMapFragment();
         this.loginFragment = new LoginFragment();
 
-        Firebase.setAndroidContext(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         EventBus.getDefault().register(this);

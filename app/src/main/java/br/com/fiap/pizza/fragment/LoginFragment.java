@@ -1,4 +1,4 @@
-package br.com.fiap.pizza;
+package br.com.fiap.pizza.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,31 +14,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.plus.Plus;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
+import br.com.fiap.pizza.util.OnActivityResultEvent;
+import br.com.fiap.pizza.util.OnLoginChange;
+import br.com.fiap.pizza.R;
 
 
 /**
@@ -192,7 +185,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
 
     @Subscribe
     public void onMessageEvent(OnActivityResultEvent event) {
-        System.out.println("OnActivityResultEvent");
+
         if (event.requestCode == RC_SIGN_IN) {
             System.out.println("RC_SIGN_IN");
             mGoogleIntentInProgress  = false;

@@ -1,4 +1,4 @@
-package br.com.fiap.pizza;
+package br.com.fiap.pizza.fragment;
 
 
 import android.app.NotificationManager;
@@ -46,6 +46,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import br.com.fiap.pizza.activity.MainActivity;
+import br.com.fiap.pizza.R;
+
 
 public class ItemFragment extends Fragment {
 
@@ -59,7 +62,7 @@ public class ItemFragment extends Fragment {
     static View view;
     Firebase mapRef;
     Firebase fireRef;
-    NodeUnfucker nodeUnfucker = new NodeUnfucker();
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
