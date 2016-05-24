@@ -36,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,6 +49,7 @@ import java.io.InputStream;
 
 import br.com.fiap.pizza.activity.MainActivity;
 import br.com.fiap.pizza.R;
+import br.com.fiap.pizza.util.BitMapUtil;
 
 
 public class ItemFragment extends Fragment {
@@ -104,6 +106,7 @@ public class ItemFragment extends Fragment {
             System.out.println("RECYCLER");
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            
             recyclerView.setHasFixedSize(true);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -118,6 +121,7 @@ public class ItemFragment extends Fragment {
 
 
                     System.out.println("NODEEE " + jsonNode);
+
 
                     JsonNode details = jsonNode.get("details");
                     JsonNode name = details.get("name");
@@ -142,29 +146,30 @@ public class ItemFragment extends Fragment {
 
                     }
 
-                    if (center != null) {
-                        LatLng latLng = new Gson().fromJson(center.toString(), LatLng.class);
-                        myViewHolder.latLng = latLng;
-
-                        if (myViewHolder.isMapReady) {
-                            myViewHolder.marker.remove();
-                            myViewHolder.addMarker(latLng);
-                        }
-                    }
-
                     if (avatar != null) {
                         Picasso.with(getContext()).load(avatar.textValue()).into(myViewHolder.avatar);
                         bitmap = ((BitmapDrawable) myViewHolder.avatar.getDrawable()).getBitmap();
 
 
+
+                    }
+
+                    if (center != null) {
+                        LatLng latLng = new Gson().fromJson(center.toString(), LatLng.class);
+                        myViewHolder.latLng = latLng;
+                        myViewHolder.customMarkerBitMap = BitMapUtil.getMarkerBitmapFromView(avatar.textValue(), getContext());
+
+
+                        if (myViewHolder.isMapReady) {
+                            myViewHolder.marker.remove();
+
+                            myViewHolder.addMarker(latLng, bitmap);
+                        }
                     }
 
 
-                    if (!isFirstStart) {
-                        displayNotificatoin(name.textValue(), getCircleBitmap(bitmap));
-                    }
 
-                    isFirstStart = false;
+
 
 
                 }
@@ -177,71 +182,7 @@ public class ItemFragment extends Fragment {
     }
 
 
-    private Bitmap getCircleBitmap(Bitmap bitmap) {
-        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
 
-        final int color = Color.RED;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawOval(rectF, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        bitmap.recycle();
-
-        return output;
-    }
-
-
-    public static Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
-        InputStream input = view.getContext().getContentResolver().openInputStream(uri);
-
-        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
-        onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither = true;//optional
-        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
-        input.close();
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) return null;
-
-        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
-
-        double ratio = (originalSize > 5) ? (originalSize / 5) : 1.0;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither = true;//optional
-        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        input = view.getContext().getContentResolver().openInputStream(uri);
-        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
-        input.close();
-        return bitmap;
-    }
-
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
-    }
-
-    private void displayNotificatoin(String name, Bitmap bitmap) {
-
-        NotificationManager notificationManager = (NotificationManager) view.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(view.getContext())
-
-                .setSmallIcon(R.drawable.ic_account_circle).setContentTitle("Nova Linha Criada!").setContentText(name + " Acabou de criar uma iniciar nova linha ").setLargeIcon(bitmap);
-
-        notificationManager.notify(1001, notificationBuilder.build());
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -267,6 +208,7 @@ public class ItemFragment extends Fragment {
         public Marker marker;
         final FloatingActionButton fabEmail;
         MainActivity mainActivity;
+        public Bitmap customMarkerBitMap;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -287,7 +229,18 @@ public class ItemFragment extends Fragment {
             this.googleMap = googleMap;
 
             if (latLng != null) {
-                this.marker = googleMap.addMarker(new MarkerOptions().position(latLng));
+
+
+                if (this.customMarkerBitMap != null) {
+                   marker = googleMap.addMarker(new MarkerOptions()
+                            .position(this.latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(this.customMarkerBitMap)));
+                }else {
+                    marker =  googleMap.addMarker(new MarkerOptions().position(latLng));
+                }
+
+
+
                 CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
                 CameraUpdate zoom = CameraUpdateFactory.zoomTo(4);
 
@@ -297,11 +250,20 @@ public class ItemFragment extends Fragment {
 
         }
 
-        public void addMarker(LatLng latLng) {
+        public void addMarker(LatLng latLng, Bitmap customMarkerBitMap) {
             this.latLng = latLng;
             googleMap.clear();
 
-            googleMap.addMarker(new MarkerOptions().position(latLng));
+
+            if (customMarkerBitMap != null) {
+                marker =  googleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromBitmap(customMarkerBitMap)));
+            }else {
+                marker =  googleMap.addMarker(new MarkerOptions().position(latLng));
+            }
+
+
             CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
             CameraUpdate zoom = CameraUpdateFactory.zoomTo(4);
 

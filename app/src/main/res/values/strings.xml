@@ -70,5 +70,6 @@
     <string name="login_needed">Você precisa estar logado para criar novas linhas!</string>
     <string name="no_more_points">Não há mais pontos para deletar</string>
     <string name="lista_de_linhas">Lista de Linhas</string>
+    <string name="tela_de_login">Tela de Login</string>
 
 </resources>
