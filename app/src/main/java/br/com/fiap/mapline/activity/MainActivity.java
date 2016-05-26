@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.activity;
+package br.com.fiap.mapline.activity;
 
 
 import android.Manifest;
@@ -31,21 +31,17 @@ import com.yqritc.scalablevideoview.ScalableVideoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import br.com.fiap.pizza.R;
-import br.com.fiap.pizza.fragment.ItemFragment;
-import br.com.fiap.pizza.fragment.LoginFragment;
-import br.com.fiap.pizza.fragment.MyMapFragment;
-import br.com.fiap.pizza.service.MyFirebaseService;
-import br.com.fiap.pizza.util.MyFirebaseMapUtil;
-import br.com.fiap.pizza.util.OnActivityResultEvent;
-import br.com.fiap.pizza.util.OnLoginChange;
+import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.fragment.ItemFragment;
+import br.com.fiap.mapline.fragment.LoginFragment;
+import br.com.fiap.mapline.fragment.MyMapFragment;
+import br.com.fiap.mapline.service.MyFirebaseService;
+import br.com.fiap.mapline.util.MyFirebaseMapUtil;
+import br.com.fiap.mapline.util.OnActivityResultEvent;
+import br.com.fiap.mapline.util.OnLoginChange;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, MyFirebaseMapUtil.OnMyFirebaseReady, SurfaceHolder.Callback {
 
-
-    private static final int RC_SIGN_IN = 9001;
-    private static final String TAG = "SignInActivity";
-    private MediaPlayer mp = null;
     boolean isLogged = false;
     String nome;
     String email;
@@ -53,17 +49,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView nomeView;
     ImageView avatarView;
     TextView emailView;
-
     SharedPreferences mPrefs;
-
-
     LatLng latLng = null;
     Bundle savedInstanceState;
-
     MyMapFragment myMapFragment;
     LoginFragment loginFragment;
-
-
     ScalableVideoView mVideoView;
     private boolean isMapReady = false;
     NavigationView navigationView;
@@ -78,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         this.myMapFragment = new MyMapFragment();
         this.loginFragment = new LoginFragment();
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         EventBus.getDefault().register(this);
@@ -89,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             mVideoView.setRawData(R.raw.main_background);
             mVideoView.setLooping(true);
-
             mVideoView.prepare(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
@@ -102,12 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             System.out.println("ERROR BACKGROUND");
         }
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR);
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
+
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);

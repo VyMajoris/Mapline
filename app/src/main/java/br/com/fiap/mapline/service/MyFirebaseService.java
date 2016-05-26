@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.service;
+package br.com.fiap.mapline.service;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -16,9 +16,9 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 
-import br.com.fiap.pizza.R;
-import br.com.fiap.pizza.util.BitMapUtil;
-import br.com.fiap.pizza.util.MyFirebaseMapUtil;
+import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.util.BitMapUtil;
+import br.com.fiap.mapline.util.MyFirebaseMapUtil;
 
 public class MyFirebaseService extends Service implements MyFirebaseMapUtil.OnMyFirebaseReady {
 

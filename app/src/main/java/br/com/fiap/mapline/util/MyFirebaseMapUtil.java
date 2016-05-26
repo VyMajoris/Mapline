@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.util;
+package br.com.fiap.mapline.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.fragment;
+package br.com.fiap.mapline.fragment;
 
 
 import android.content.Context;
@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import br.com.fiap.pizza.R;
-import br.com.fiap.pizza.listeners.MyMapRefChildEventListener;
-import br.com.fiap.pizza.util.MyFirebaseMapUtil;
+import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.listeners.MyMapRefChildEventListener;
+import br.com.fiap.mapline.util.MyFirebaseMapUtil;
 
 
 /**

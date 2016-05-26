@@ -1,8 +1,5 @@
-package br.com.fiap.pizza.util;
+package br.com.fiap.mapline.util;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;

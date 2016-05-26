@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.application;
+package br.com.fiap.mapline.application;
 
 import android.app.Application;
 import android.content.Context;

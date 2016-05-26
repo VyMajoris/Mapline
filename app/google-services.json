@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "414968582691",
-    "project_id": "uplifted-triode-130104"
+    "project_number": "707900993259",
+    "project_id": "mapline-android"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:414968582691:android:4b5ac92138ec1d92",
+        "mobilesdk_app_id": "1:707900993259:android:c70db5b3de017e8a",
         "android_client_info": {
-          "package_name": "br.com.fiap.pizza"
+          "package_name": "br.com.fiap.mapline"
         }
       },
       "oauth_client": [
         {
-          "client_id": "414968582691-ore44ta2vq3h3hn0ep19c0aj6nnk2eqo.apps.googleusercontent.com",
+          "client_id": "707900993259-s0riv65tpkkuatj9dn17e84ba74ls6sg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "br.com.fiap.pizza",
+            "package_name": "br.com.fiap.mapline",
             "certificate_hash": "26E54E43DFE9AB9ABD234F5DCBCADBD948A8E15D"
           }
         },
         {
-          "client_id": "414968582691-a3mr7mm6p50fie3ren92toop1sp8734l.apps.googleusercontent.com",
+          "client_id": "707900993259-f5ib2krb5adhmn53igar0cn2lggvonve.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAtBCCP7PJLGYF4_WahuQaKYepKqs0II4o"
+          "current_key": "AIzaSyDJ3kjj4b1n8ohGnrgz2TOKxdmG-xJhDIk"
         }
       ],
       "services": {

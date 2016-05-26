@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.fragment;
+package br.com.fiap.mapline.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,9 +30,9 @@ import com.google.android.gms.common.api.Status;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import br.com.fiap.pizza.util.OnActivityResultEvent;
-import br.com.fiap.pizza.util.OnLoginChange;
-import br.com.fiap.pizza.R;
+import br.com.fiap.mapline.util.OnActivityResultEvent;
+import br.com.fiap.mapline.util.OnLoginChange;
+import br.com.fiap.mapline.R;
 
 
 /**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="br.com.fiap.pizza">
+          package="br.com.fiap.mapline">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -15,10 +15,7 @@
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"/>
 
-    <!-- casa -->
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyAtBCCP7PJLGYF4_WahuQaKYepKqs0II4o"/>
+
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -26,14 +23,14 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <application
-        android:name=".application.MyApplication"
+        android:name="br.com.fiap.mapline.application.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="br.com.fiap.mapline.activity.MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -44,20 +41,12 @@
             </intent-filter>
         </activity>
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
 
         <service
-            android:name=".service.MyFirebaseService"
+            android:name="br.com.fiap.mapline.service.MyFirebaseService"
             android:enabled="true"
             android:exported="true">
         </service>

@@ -1,24 +1,14 @@
-package br.com.fiap.pizza.fragment;
+package br.com.fiap.mapline.fragment;
 
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,13 +33,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import br.com.fiap.pizza.activity.MainActivity;
-import br.com.fiap.pizza.R;
-import br.com.fiap.pizza.util.BitMapUtil;
+import br.com.fiap.mapline.activity.MainActivity;
+import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.util.BitMapUtil;
 
 
 public class ItemFragment extends Fragment {

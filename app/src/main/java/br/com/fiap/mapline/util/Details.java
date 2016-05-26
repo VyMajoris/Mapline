@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.util;
+package br.com.fiap.mapline.util;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.android.gms.maps.model.LatLng;

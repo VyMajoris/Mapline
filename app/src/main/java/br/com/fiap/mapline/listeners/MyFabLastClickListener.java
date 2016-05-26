@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.listeners;
+package br.com.fiap.mapline.listeners;
 
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
@@ -18,9 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.fiap.pizza.R;
-import br.com.fiap.pizza.util.Details;
-import br.com.fiap.pizza.util.MyMapUtil;
+import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.util.Details;
+import br.com.fiap.mapline.util.MyMapUtil;
 
 /**
  * Created by VyMajoriss on 5/18/2016.

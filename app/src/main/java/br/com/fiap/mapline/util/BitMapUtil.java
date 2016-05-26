@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.util;
+package br.com.fiap.mapline.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import br.com.fiap.pizza.R;
+import br.com.fiap.mapline.R;
 
 /**
  * Created by VyMajoriss on 5/19/2016.

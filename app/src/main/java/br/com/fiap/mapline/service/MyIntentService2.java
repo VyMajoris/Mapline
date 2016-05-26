@@ -1,4 +1,4 @@
-package br.com.fiap.pizza.service;
+package br.com.fiap.mapline.service;
 
 import android.app.IntentService;
 import android.content.Intent;
