@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
-    android:name="br.com.fiap.pizza.ItemFragment"
+    android:name="br.com.fiap.mapline.ItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 

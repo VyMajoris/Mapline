@@ -266,7 +266,7 @@ public class ItemFragment extends Fragment {
         public void onClick(View v) {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", textEmail.getText().toString(), null));
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "FIAP - Android");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Github: https://github.com/vymajoris/pizza");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Github: https://github.com/vymajoris/Mapline");
             mainActivity.startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
         }
