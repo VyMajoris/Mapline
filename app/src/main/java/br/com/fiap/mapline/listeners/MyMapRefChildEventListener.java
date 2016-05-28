@@ -1,11 +1,15 @@
 package br.com.fiap.mapline.listeners;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.fiap.mapline.util.BitMapUtil;
 import br.com.fiap.mapline.util.MyMapUtil;
 
 /**
@@ -27,9 +32,10 @@ public class MyMapRefChildEventListener implements ChildEventListener {
     String polylineId;
     Firebase mapRef;
     GoogleMap map;
+    Context context;
 
-
-    public MyMapRefChildEventListener(String polylineId, Firebase mapRef, GoogleMap map) {
+    public MyMapRefChildEventListener(Context context, String polylineId, Firebase mapRef, GoogleMap map) {
+        this.context = context;
         this.polylineId = polylineId;
         this.mapRef = mapRef;
         this.map = map;
@@ -38,8 +44,9 @@ public class MyMapRefChildEventListener implements ChildEventListener {
     HashMap<String, PolylineOptions> polylineOptionsMap = new HashMap<>();
     HashMap<String, List<Polyline>> polylineHashMap = new HashMap<>();
     HashMap<String, List<LatLng>> latLngHashMap = new HashMap<>();
-    HashMap<String, Integer> colorMap = new HashMap<>();
-    HashMap<String, Marker> markerHashMap = new HashMap<String, Marker>();
+    HashMap<String, Integer> colorHashMap = new HashMap<>();
+    HashMap<String, Marker> markerHashMap = new HashMap<>();
+    HashMap<String, String> avatarHashMap = new HashMap<>();
 
     @Override
     public void onChildAdded(DataSnapshot snap, String s) {
@@ -50,13 +57,18 @@ public class MyMapRefChildEventListener implements ChildEventListener {
             polylineHashMap.put(snap.getKey(), new ArrayList<Polyline>());
             latLngHashMap.put(snap.getKey(), new ArrayList<LatLng>());
             markerHashMap.put(snap.getKey(), null);
+            avatarHashMap.put(snap.getKey(), null);
 
             snap.child("details").getRef().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     int color = Integer.valueOf(dataSnapshot.child("color").getValue().toString());
-                    colorMap.put(dataSnapshot.getRef().getParent().getKey(), color);
+                    String avatar = dataSnapshot.child("avatar").getValue().toString();
+                    colorHashMap.put(dataSnapshot.getRef().getParent().getKey(), color);
+                    avatarHashMap.put(dataSnapshot.getRef().getParent().getKey(), avatar);
+
+
                 }
 
                 @Override
@@ -69,6 +81,7 @@ public class MyMapRefChildEventListener implements ChildEventListener {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+
                     String parentKey = dataSnapshot.getRef().getParent().getKey();
                     try {
                         if (!dataSnapshot.getKey().equals("details")) {
@@ -80,7 +93,7 @@ public class MyMapRefChildEventListener implements ChildEventListener {
 
                             LatLng latLng = new Gson().fromJson((String) dataSnapshot.getValue(), LatLng.class);
 
-                            polylineOptionsMap.put(parentKey, polylineOptionsMap.get(parentKey).color(colorMap.get(parentKey)).add(latLng));
+                            polylineOptionsMap.put(parentKey, polylineOptionsMap.get(parentKey).color(colorHashMap.get(parentKey)).add(latLng));
 
                             List<Polyline> polyTempArray = polylineHashMap.get(parentKey);
                             polyTempArray.add(map.addPolyline(polylineOptionsMap.get(parentKey)));
@@ -88,7 +101,11 @@ public class MyMapRefChildEventListener implements ChildEventListener {
                             List<LatLng> latlngTempArray = latLngHashMap.get(parentKey);
                             latlngTempArray.add(latLng);
                             latLngHashMap.put(parentKey, latlngTempArray);
-                            markerHashMap.put(parentKey, map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))));
+
+
+                            markerHashMap.put(parentKey, map.addMarker(new MarkerOptions()
+                                    .position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))
+                                    .icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(avatarHashMap.get(parentKey), context)))));
                         }
 
                     } catch (Exception e) {

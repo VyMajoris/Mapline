@@ -30,43 +30,47 @@
                 android:src="@android:drawable/sym_def_app_icon"
                 />
 
-                <me.grantland.widget.AutofitTextView
-                    android:id="@+id/cardname"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/cardname"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
 
-                    android:layout_marginRight="10dp"
-                    android:enabled="false"
-                    android:gravity="top"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/blue_grey_600"
-                    android:textSize="40sp"
-                    android:textStyle="bold"
-                    autofit:minTextSize="16sp"
-                    android:layout_toRightOf="@+id/avatar"
-                    android:layout_toEndOf="@+id/avatar"
-                    android:layout_alignTop="@+id/avatar"/>
+                android:layout_alignTop="@+id/avatar"
 
-                <me.grantland.widget.AutofitTextView
-                    android:id="@+id/cardemail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toEndOf="@+id/avatar"
+                android:layout_toRightOf="@+id/avatar"
+                android:enabled="false"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:singleLine="true"
 
+                android:textColor="@color/blue_grey_600"
+                android:textSize="40sp"
 
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/blue_grey_600"
-                    android:textSize="40sp"
-                    android:textStyle="italic"
-                    autofit:minTextSize="16sp"
-                    android:layout_alignBottom="@+id/avatar"
-                    android:layout_alignLeft="@+id/cardname"
-                    android:layout_alignStart="@+id/cardname"
-                    android:layout_below="@+id/cardname"
-                    android:layout_toRightOf="@+id/fab_email"
-                    android:layout_alignRight="@+id/cardname"
-                    android:layout_alignEnd="@+id/cardname"/>
+                autofit:minTextSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                />
+
+            <me.grantland.widget.AutofitTextView
+                android:id="@+id/cardemail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="top"
+                android:layout_alignBottom="@+id/avatar"
+                android:layout_alignEnd="@+id/cardname"
+                android:layout_alignLeft="@+id/cardname"
+                android:layout_alignRight="@+id/cardname"
+                android:layout_alignStart="@+id/cardname"
+                android:layout_below="@+id/cardname"
+                android:layout_toRightOf="@+id/fab_email"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/blue_grey_600"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif"
+                autofit:minTextSize="1sp"/>
 
 
             <android.support.design.widget.FloatingActionButton
@@ -74,17 +78,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
+                android:layout_alignEnd="@+id/cardname"
+                android:layout_alignRight="@+id/cardname"
+
+
                 android:layout_alignWithParentIfMissing="false"
+                android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-
-
                 android:clickable="true"
                 android:src="@drawable/ic_email"
                 android:tint="@android:color/white"
-                app:backgroundTint="@color/blue_grey_600"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/cardname"
-                android:layout_alignEnd="@+id/cardname"/>
+                app:backgroundTint="@color/blue_grey_600"/>
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_view"

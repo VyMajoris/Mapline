@@ -1,16 +1,15 @@
 package br.com.fiap.mapline.activity;
 
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,7 +34,7 @@ import br.com.fiap.mapline.R;
 import br.com.fiap.mapline.fragment.ItemFragment;
 import br.com.fiap.mapline.fragment.LoginFragment;
 import br.com.fiap.mapline.fragment.MyMapFragment;
-import br.com.fiap.mapline.service.MyFirebaseService;
+import br.com.fiap.mapline.service.MyFirebaseListenerService;
 import br.com.fiap.mapline.util.MyFirebaseMapUtil;
 import br.com.fiap.mapline.util.OnActivityResultEvent;
 import br.com.fiap.mapline.util.OnLoginChange;
@@ -83,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mVideoView.start();
                 }
             });
+
             System.out.println("BACK GROUND OK");
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,13 +135,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (isLogged) {
 
-            Picasso.with(this).load(this.avatar).into(avatarView);
+            System.out.println("LOGIN:");
+            if (avatar != null) {
+                System.out.println("LOGIN:fgddfgfdgfd " + this.avatar);
+                Picasso.with(this).load(this.avatar).error(R.drawable.fiap).into(avatarView);
+            }
+
+
             nomeView.setText(this.nome);
             emailView.setText(this.email);
 
         } else {
 
-            Picasso.with(this).load("https://www2.fiap.com.br/updown/fiapx/podcast/logo_fiap.jpg").into(avatarView);
+            Picasso.with(this).load(R.drawable.fiap).into(avatarView);
+
             nomeView.setText("Faça o Login!");
             emailView.setText("Google-Firebase-Fiap");
         }
@@ -150,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void updateUserInfoFromPrefs() {
-        mPrefs.edit().putString("email", email).putString("nome", nome).putString("avatar", avatar.toString()).putBoolean("isLogged", isLogged).apply();
+
+
+        mPrefs.edit().putString("email", email).putString("nome", nome).putString("avatar", avatar == null ? null : avatar.toString()).putBoolean("isLogged", isLogged).apply();
     }
 
     public void getUserInfoFromPrefs() {
@@ -176,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             emailView.setText(this.email);
 
         } else {
-            Picasso.with(this).load("https://www2.fiap.com.br/updown/fiapx/podcast/logo_fiap.jpg").into(avatarView);
+            Picasso.with(this).load(R.drawable.fiap).into(avatarView);
             nomeView.setText("Faça o Login!");
             emailView.setText("Google-Firebase-Fiap");
         }
@@ -333,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Thread t = new Thread() {
             public void run() {
 
-                Intent serviceIntent = new Intent(getApplicationContext(), MyFirebaseService.class);
+                Intent serviceIntent = new Intent(getApplicationContext(), MyFirebaseListenerService.class);
                 startService(serviceIntent);
             }
         };
@@ -344,6 +353,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPause() {
         super.onPause();
-        stopService(new Intent(this, MyFirebaseService.class));
+        mVideoView.pause();
+        stopService(new Intent(this, MyFirebaseListenerService.class));
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mVideoView.start();
     }
 }

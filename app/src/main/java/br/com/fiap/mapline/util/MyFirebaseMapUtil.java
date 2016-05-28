@@ -6,6 +6,7 @@ import android.graphics.Color;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,7 +28,7 @@ public class MyFirebaseMapUtil {
     static OnMyFirebaseReady mCallback;
     public static Random rnd = new Random();
     public static int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    public static Firebase mapRef = new Firebase("https://torrid-fire-6287.firebaseio.com/map");
+    public static Firebase mapRef = new Firebase("https://mapline-android.firebaseio.com/map");
     public static Firebase myPolylineRef;
     public static List<Firebase> myLatLngRefList = new ArrayList<>();
     public static String polylineId;
@@ -37,12 +38,13 @@ public class MyFirebaseMapUtil {
     public static Firebase myLatLngRef;
     public static Marker myMarker = null;
     public static GoogleMap map;
+    public static Context context;
 
 
     public static void init(Context context, SharedPreferences mPrefs) {
+        MyFirebaseMapUtil.context = context;
         MyFirebaseMapUtil.mPrefs = mPrefs;
 
-        System.out.println("My MAP INITTTT");
 
         try {
             mCallback = (OnMyFirebaseReady) context;
@@ -80,7 +82,8 @@ public class MyFirebaseMapUtil {
         myPolylineOptions = new Gson().fromJson(mPrefs.getString("myPolylineOptions", null), PolylineOptions.class);
         if (myPolylineOptions != null) {
             myPolilines.add(MyFirebaseMapUtil.map.addPolyline(myPolylineOptions));
-            myMarker = MyFirebaseMapUtil.map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())));
+            myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())).icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(mPrefs.getString("avatar", null), context))));
+
         }
     }
 
@@ -99,7 +102,9 @@ public class MyFirebaseMapUtil {
         }
 
         myPolylineOptions.add(latLng);
-        myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())));
+        myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())).icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(mPrefs.getString("avatar", null), context))));
+
+
         myPolilines.add(map.addPolyline(myPolylineOptions));
         MyFirebaseMapUtil.myLatLngRefList.add(myLatLngRef);
         Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
@@ -119,8 +124,7 @@ public class MyFirebaseMapUtil {
     }
 
 
-
-    public static void removeLastMyPoint(){
+    public static void removeLastMyPoint() {
 
         for (Polyline line : myPolilines) {
             line.remove();
@@ -156,7 +160,8 @@ public class MyFirebaseMapUtil {
         }
 
         if (myLatLngRefList.size() > 0) {
-            myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())));
+            myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())).icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(mPrefs.getString("avatar", null), context))));
+
 
             Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
             myPolylineRef.child("details").setValue(details);

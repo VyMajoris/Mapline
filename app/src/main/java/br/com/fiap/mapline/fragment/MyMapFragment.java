@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
@@ -46,16 +47,11 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
     SharedPreferences mPrefs;
     PolylineOptions myPolylineOptions;
     GoogleMap mMap;
-    //Firebase mapRef;
-    //Firebase fireRef;
-    //String polylineId;
-    //Firebase myPolylineRef;
     Map<String, Object> listOfLines;
     List<Polyline> myPolilines = new ArrayList<>();
     FloatingActionMenu fam;
     View view;
     Marker myMarker = null;
-    //List<Firebase> myLatLngRefList = new ArrayList<>();
 
 
     public MyMapFragment() {
@@ -107,6 +103,18 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(final GoogleMap map) {
         MyFirebaseMapUtil.onMapReady(map);
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition position) {
+
+                float minZoom = 5.0f;
+                if (position.zoom < minZoom) {
+
+                    map.animateCamera(CameraUpdateFactory.zoomTo(minZoom), 1000, null);
+                }
+            }
+        });
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -121,7 +129,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        MyFirebaseMapUtil.mapRef.addChildEventListener(new MyMapRefChildEventListener(MyFirebaseMapUtil.polylineId, MyFirebaseMapUtil.mapRef, map));
+        MyFirebaseMapUtil.mapRef.addChildEventListener(new MyMapRefChildEventListener(getContext(), MyFirebaseMapUtil.polylineId, MyFirebaseMapUtil.mapRef, map));
         mMap = map;
 
         final FloatingActionButton fabLast = (FloatingActionButton) view.findViewById(R.id.deletar_last_button);

@@ -1,5 +1,6 @@
 package br.com.fiap.mapline.listeners;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.View;
 import com.firebase.client.Firebase;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.util.BitMapUtil;
 import br.com.fiap.mapline.util.Details;
 import br.com.fiap.mapline.util.MyMapUtil;
 
@@ -28,6 +31,7 @@ import br.com.fiap.mapline.util.MyMapUtil;
 public class MyFabLastClickListener implements  View.OnClickListener{
 
 
+    Context context;
     SharedPreferences mPrefs;
     List<Polyline> myPolilines;
     Marker myMarker;
@@ -36,7 +40,8 @@ public class MyFabLastClickListener implements  View.OnClickListener{
     GoogleMap map;
     int color;
 
-    public MyFabLastClickListener(FloatingActionMenu fam, SharedPreferences mPrefs, List<Polyline> myPolilines, Marker myMarker, List<Firebase> myLatLngRefList, PolylineOptions myPolylineOptions, GoogleMap map, int color, Firebase myPolylineRef) {
+    public MyFabLastClickListener(Context context, FloatingActionMenu fam, SharedPreferences mPrefs, List<Polyline> myPolilines, Marker myMarker, List<Firebase> myLatLngRefList, PolylineOptions myPolylineOptions, GoogleMap map, int color, Firebase myPolylineRef) {
+        this.context = context;
         this.fam = fam;
         this.mPrefs = mPrefs;
         this.myPolilines = myPolilines;
@@ -92,7 +97,8 @@ public class MyFabLastClickListener implements  View.OnClickListener{
                 }
 
                 if (myLatLngRefList.size() > 0) {
-                    myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())));
+                    myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())).icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(mPrefs.getString("avatar", ""), context))));
+
 
                     Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
                     myPolylineRef.child("details").setValue(details);

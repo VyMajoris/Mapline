@@ -20,7 +20,7 @@ import br.com.fiap.mapline.R;
 import br.com.fiap.mapline.util.BitMapUtil;
 import br.com.fiap.mapline.util.MyFirebaseMapUtil;
 
-public class MyFirebaseService extends Service implements MyFirebaseMapUtil.OnMyFirebaseReady {
+public class MyFirebaseListenerService extends Service implements MyFirebaseMapUtil.OnMyFirebaseReady {
 
     private ChildEventListener listener;
     Firebase mapRef = null;
@@ -37,7 +37,9 @@ public class MyFirebaseService extends Service implements MyFirebaseMapUtil.OnMy
     public void onCreate() {
         super.onCreate();
         Firebase.setAndroidContext(this);
-        mapRef = new Firebase("https://torrid-fire-6287.firebaseio.com/map");
+
+        System.out.println("SERVICE UPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
+        mapRef = new Firebase("https://mapline-android.firebaseio.com/map");
 
 
         mapRef.addChildEventListener(new ChildEventListener() {

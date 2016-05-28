@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "707900993259",
-    "project_id": "mapline-android"
+    "firebase_url": "https://mapline-android.firebaseio.com",
+    "project_id": "mapline-android",
+    "storage_bucket": "mapline-android.appspot.com"
   },
   "client": [
     {
@@ -21,6 +23,10 @@
           }
         },
         {
+          "client_id": "707900993259-kigjd9bcn0u34cvfigmtanksk4clobcl.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "707900993259-f5ib2krb5adhmn53igar0cn2lggvonve.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707900993259-kigjd9bcn0u34cvfigmtanksk4clobcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

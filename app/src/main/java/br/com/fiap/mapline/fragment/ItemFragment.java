@@ -4,7 +4,6 @@ package br.com.fiap.mapline.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -33,8 +32,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import br.com.fiap.mapline.activity.MainActivity;
 import br.com.fiap.mapline.R;
+import br.com.fiap.mapline.activity.MainActivity;
 import br.com.fiap.mapline.util.BitMapUtil;
 
 
@@ -83,8 +82,8 @@ public class ItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
-        System.out.println("full nod111: " + fireRef);
-        fireRef = new Firebase("https://torrid-fire-6287.firebaseio.com");
+        fireRef = new Firebase("https://mapline-android.firebaseio.com/");
+
         mapRef = fireRef.child("map");
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -92,7 +91,7 @@ public class ItemFragment extends Fragment {
             System.out.println("RECYCLER");
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            
+
             recyclerView.setHasFixedSize(true);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -106,16 +105,12 @@ public class ItemFragment extends Fragment {
                 protected void populateViewHolder(MyViewHolder myViewHolder, JsonNode jsonNode, int i) {
 
 
-                    System.out.println("NODEEE " + jsonNode);
-
-
                     JsonNode details = jsonNode.get("details");
                     JsonNode name = details.get("name");
                     JsonNode color = details.get("color");
                     JsonNode email = details.get("email");
-                    JsonNode avatar = details.get("avatar");
                     JsonNode center = details.get("center");
-                    Bitmap bitmap = null;
+                    JsonNode avatar = details.get("avatar");
 
 
                     if (color != null) {
@@ -131,31 +126,24 @@ public class ItemFragment extends Fragment {
                         myViewHolder.textEmail.setText(email.textValue());
 
                     }
-
                     if (avatar != null) {
-                        Picasso.with(getContext()).load(avatar.textValue()).into(myViewHolder.avatar);
-                        bitmap = ((BitmapDrawable) myViewHolder.avatar.getDrawable()).getBitmap();
-
-
+                        Picasso.with(getContext()).load(avatar.textValue()).error(R.drawable.fiap).into(myViewHolder.avatar);
+                        //myViewHolder.avatar.setImageURI(Uri.parse(avatar.textValue()));
 
                     }
+
 
                     if (center != null) {
                         LatLng latLng = new Gson().fromJson(center.toString(), LatLng.class);
                         myViewHolder.latLng = latLng;
-                        myViewHolder.customMarkerBitMap = BitMapUtil.getMarkerBitmapFromView(avatar.textValue(), getContext());
 
 
                         if (myViewHolder.isMapReady) {
                             myViewHolder.marker.remove();
 
-                            myViewHolder.addMarker(latLng, bitmap);
+                            myViewHolder.addMarker(latLng);
                         }
                     }
-
-
-
-
 
 
                 }
@@ -166,8 +154,6 @@ public class ItemFragment extends Fragment {
         }
         return view;
     }
-
-
 
 
     @Override
@@ -199,6 +185,7 @@ public class ItemFragment extends Fragment {
         public MyViewHolder(View itemView) {
             super(itemView);
             mainActivity = (MainActivity) view.getContext();
+            customMarkerBitMap = BitMapUtil.getMarkerBitmapFromView(view.getContext());
             mapView.onCreate(null);
             mapView.getMapAsync(this);
             textName = (TextView) itemView.findViewById(R.id.cardname);
@@ -218,13 +205,10 @@ public class ItemFragment extends Fragment {
 
 
                 if (this.customMarkerBitMap != null) {
-                   marker = googleMap.addMarker(new MarkerOptions()
-                            .position(this.latLng)
-                            .icon(BitmapDescriptorFactory.fromBitmap(this.customMarkerBitMap)));
-                }else {
-                    marker =  googleMap.addMarker(new MarkerOptions().position(latLng));
+                    marker = googleMap.addMarker(new MarkerOptions().position(this.latLng).icon(BitmapDescriptorFactory.fromBitmap(this.customMarkerBitMap)));
+                } else {
+                    marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                 }
-
 
 
                 CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
@@ -236,17 +220,15 @@ public class ItemFragment extends Fragment {
 
         }
 
-        public void addMarker(LatLng latLng, Bitmap customMarkerBitMap) {
+        public void addMarker(LatLng latLng) {
             this.latLng = latLng;
             googleMap.clear();
 
 
             if (customMarkerBitMap != null) {
-                marker =  googleMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromBitmap(customMarkerBitMap)));
-            }else {
-                marker =  googleMap.addMarker(new MarkerOptions().position(latLng));
+                marker = googleMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(customMarkerBitMap)));
+            } else {
+                marker = googleMap.addMarker(new MarkerOptions().position(latLng));
             }
 
 
