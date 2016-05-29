@@ -1,15 +1,20 @@
 package br.com.fiap.mapline.activity;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.SurfaceTexture;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,18 +22,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceHolder;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.common.collect.Lists;
 import com.squareup.picasso.Picasso;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 import br.com.fiap.mapline.R;
 import br.com.fiap.mapline.fragment.ItemFragment;
@@ -39,7 +47,7 @@ import br.com.fiap.mapline.util.MyFirebaseMapUtil;
 import br.com.fiap.mapline.util.OnActivityResultEvent;
 import br.com.fiap.mapline.util.OnLoginChange;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, MyFirebaseMapUtil.OnMyFirebaseReady, SurfaceHolder.Callback {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MyMapFragment.OnMyMapReady, MyFirebaseMapUtil.OnMyFirebaseReady {
 
     boolean isLogged = false;
     String nome;
@@ -60,19 +68,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPrefs = this.getSharedPreferences("Google_firebase", this.MODE_PRIVATE);
-        Firebase.setAndroidContext(this);
-        MyFirebaseMapUtil.init(this, mPrefs);
         this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
         this.myMapFragment = new MyMapFragment();
         this.loginFragment = new LoginFragment();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        EventBus.getDefault().register(this);
-        mPrefs = getSharedPreferences("Google_firebase", MODE_PRIVATE);
-        mVideoView = (ScalableVideoView) findViewById(R.id.main_background_videoview);
 
+
+        //Pega o SharedPreferences
+        mPrefs = getSharedPreferences("Google_firebase", MODE_PRIVATE);
+
+        //Seta o context para o firebase
+        Firebase.setAndroidContext(this);
+        MyFirebaseMapUtil.init(this, mPrefs);
+
+        //Para mandar mensagens entre classes ativas
+        EventBus.getDefault().register(this);
+
+
+
+        //Configs do video
+        mVideoView = (ScalableVideoView) findViewById(R.id.main_background_videoview);
         try {
             mVideoView.setRawData(R.raw.main_background);
             mVideoView.setLooping(true);
@@ -82,19 +99,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mVideoView.start();
                 }
             });
-
-            System.out.println("BACK GROUND OK");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("ERROR BACKGROUND");
+
         }
 
+        //Configs do Navigation Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-
         toggle.syncState();
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -104,13 +118,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("onActivityResult" + requestCode);
-
+        //Como eu sei que o único resultado que pode aparecer aqui é o de login, eu passo direto os parametros para o bus que irá disparar um método que esteja subscribed
+        //para um parametro com nome de "OnActivityResultEvent". Fica no Login Fragment
+        //O correto seria fazer o tratamento da mensagem antes de enviar pelo EventBus
         EventBus.getDefault().post(new OnActivityResultEvent(data, requestCode, resultCode));
-
-
     }
 
+
+    //Botão de retorno
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -122,10 +137,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    //Subscribe do event bus de mudança de status de login
     @Subscribe
     public void onMessageEvent(OnLoginChange event) {
-        System.out.println("OnLoginChange");
-
         this.avatar = event.avatar;
         this.email = event.email;
         this.nome = event.name;
@@ -133,35 +147,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         updateUserInfoFromPrefs();
 
+        //isLogged vem do SharedPreferences
         if (isLogged) {
-
-            System.out.println("LOGIN:");
             if (avatar != null) {
-                System.out.println("LOGIN:fgddfgfdgfd " + this.avatar);
                 Picasso.with(this).load(this.avatar).error(R.drawable.fiap).into(avatarView);
             }
-
-
             nomeView.setText(this.nome);
             emailView.setText(this.email);
 
         } else {
-
             Picasso.with(this).load(R.drawable.fiap).into(avatarView);
-
-            nomeView.setText("Faça o Login!");
-            emailView.setText("Google-Firebase-Fiap");
+            nomeView.setText(R.string.name_placeholder);
+            emailView.setText(R.string.email_placeholder);
         }
-
 
     }
 
+    //Atualiza as infos do SharedPrefences com as do login
     public void updateUserInfoFromPrefs() {
-
-
         mPrefs.edit().putString("email", email).putString("nome", nome).putString("avatar", avatar == null ? null : avatar.toString()).putBoolean("isLogged", isLogged).apply();
     }
 
+    //Recupera as infos para as variáves de classe
     public void getUserInfoFromPrefs() {
         this.email = mPrefs.getString("email", "");
         this.nome = mPrefs.getString("nome", "");
@@ -177,20 +184,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nomeView = (TextView) findViewById(R.id.nome);
         avatarView = (ImageView) findViewById(R.id.avatar);
         emailView = (TextView) findViewById(R.id.email);
-        getUserInfoFromPrefs();
-        if (isLogged) {
 
+        getUserInfoFromPrefs();
+
+        if (isLogged) {
             Picasso.with(this).load(this.avatar).into(avatarView);
             nomeView.setText(this.nome);
             emailView.setText(this.email);
-
         } else {
             Picasso.with(this).load(R.drawable.fiap).into(avatarView);
             nomeView.setText("Faça o Login!");
             emailView.setText("Google-Firebase-Fiap");
         }
-
-
         return true;
     }
 
@@ -200,12 +205,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -215,69 +218,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        Fragment.SavedState mapState = null;
-        if (id == R.id.nav_map) {
 
+        try {
+            //Some com o botão e o texto da activity
             findViewById(R.id.main_button).setVisibility(View.GONE);
-
-            if (fragmentManager.findFragmentByTag("map") != null) {
-                //if the fragment exists, show it.
-                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("map")).commit();
-            } else {
-                //if the fragment does not exist, add it to fragment manager.
-                fragmentManager.beginTransaction().add(R.id.content, new MyMapFragment(), "map").commit();
+            findViewById(R.id.main_info).setVisibility(View.GONE);
+            if (id == R.id.nav_map) {
+                //Mapa selecionado
+                handleFragments("map", Lists.newArrayList("login", "list"), MyMapFragment.class);
+                //Loigin elecionado
+            } else if (id == R.id.nav_account) {
+                handleFragments("login", Lists.newArrayList("map", "list"), LoginFragment.class);
+                //Lista selecionada
+            } else if (id == R.id.nav_list) {
+                handleFragments("list", Lists.newArrayList("map", "login"), ItemFragment.class);
             }
-            if (fragmentManager.findFragmentByTag("login") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("login")).commit();
-
-            }
-            if (fragmentManager.findFragmentByTag("list") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("list")).commit();
-            }
-
-        } else if (id == R.id.nav_account) {
-
-            findViewById(R.id.main_button).setVisibility(View.GONE);
-
-            if (fragmentManager.findFragmentByTag("login") != null) {
-                //if the fragment exists, show it.
-                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("login")).commit();
-            } else {
-                //if the fragment does not exist, add it to fragment manager.
-                fragmentManager.beginTransaction().add(R.id.content, new LoginFragment(), "login").commit();
-            }
-            if (fragmentManager.findFragmentByTag("map") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("map")).commit();
-            }
-            if (fragmentManager.findFragmentByTag("list") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("list")).commit();
-            }
-        } else if (id == R.id.nav_list) {
-
-            findViewById(R.id.main_button).setVisibility(View.GONE);
-
-            if (fragmentManager.findFragmentByTag("list") != null) {
-                //if the fragment exists, show it.
-                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("list")).commit();
-            } else {
-                //if the fragment does not exist, add it to fragment manager.
-                fragmentManager.beginTransaction().add(R.id.content, new ItemFragment(), "list").commit();
-            }
-            if (fragmentManager.findFragmentByTag("map") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("map")).commit();
-            }
-            if (fragmentManager.findFragmentByTag("login") != null) {
-                //if the other fragment is visible, hide it.
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("login")).commit();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -285,16 +244,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+    //da show nos fragments que já estão adicionados
+    //da add nos fragemnts que ainda não estão adicionados
+    //da hide nos outros fragments que estão adicionados para mostrar o fragment em questão
+    public <T extends Fragment> void handleFragments(String toShow, List<String> toHide, Class<T> fragment) throws Exception {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(toShow) != null) {
+            //if the fragment exists, show it.
+            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag(toShow)).commit();
+        } else {
+            //if the fragment does not exist, add it to fragment manager.
+            fragmentManager.beginTransaction().add(R.id.content, fragment.getConstructor().newInstance(), toShow).commit();
+        }
+        for (String toHideString : toHide) {
+            if (fragmentManager.findFragmentByTag(toHideString) != null) {
+                //if the other fragment is visible, hide it.
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag(toHideString)).commit();
+            }
+        }
+    }
+
+    //Callback do OnMapReady do MyMapFragment (custom)
     @Override
     public void onFragmentInteraction() {
         isMapReady = true;
         if (latLng != null && myMapFragment.isAdded()) {
             myMapFragment.updateMapCamera(latLng);
         }
-
     }
 
-
+    //Mostra a posição no MyMapFragment conforme o click na lista de linhas
+    // (Método chamado pelo ItemFragment via contexto)
     public void showUserLineOnMap(LatLng latLng) {
         this.latLng = latLng;
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -320,33 +302,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
-
+    //Callback do MyFirebaseUtil
     @Override
     public void onMyFireabseReady() {
-        System.out.println("FIRE READYYYYYYYYYYYYYY");
-        Thread t = new Thread() {
-            public void run() {
-
-                Intent serviceIntent = new Intent(getApplicationContext(), MyFirebaseListenerService.class);
-                startService(serviceIntent);
-            }
-        };
-        t.start();
+        startMyFirebaseListenerService();
     }
 
 
@@ -354,12 +313,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onPause() {
         super.onPause();
         mVideoView.pause();
+        //para o serviço  não comer bateria e rede, pois os listeners do firebase usam socket
         stopService(new Intent(this, MyFirebaseListenerService.class));
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mVideoView.start();
+        startMyFirebaseListenerService();
+
+    }
+
+
+    private void startMyFirebaseListenerService() {
+        Thread t = new Thread() {
+            public void run() {
+                startService(new Intent(getApplicationContext(), MyFirebaseListenerService.class));
+            }
+        };
+        t.start();
     }
 }

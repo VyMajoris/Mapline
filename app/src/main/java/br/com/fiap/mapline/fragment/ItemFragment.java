@@ -128,10 +128,8 @@ public class ItemFragment extends Fragment {
                     }
                     if (avatar != null) {
                         Picasso.with(getContext()).load(avatar.textValue()).error(R.drawable.fiap).into(myViewHolder.avatar);
-                        //myViewHolder.avatar.setImageURI(Uri.parse(avatar.textValue()));
 
                     }
-
 
                     if (center != null) {
                         LatLng latLng = new Gson().fromJson(center.toString(), LatLng.class);
@@ -202,8 +200,6 @@ public class ItemFragment extends Fragment {
             this.googleMap = googleMap;
 
             if (latLng != null) {
-
-
                 if (this.customMarkerBitMap != null) {
                     marker = googleMap.addMarker(new MarkerOptions().position(this.latLng).icon(BitmapDescriptorFactory.fromBitmap(this.customMarkerBitMap)));
                 } else {

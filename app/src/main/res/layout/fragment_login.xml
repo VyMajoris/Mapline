@@ -1,44 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_login"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/blue_grey_700"
-    android:orientation="vertical"
-    android:weightSum="4"
-    tools:context=".activity.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/fragment_login"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/blue_grey_700"
+              android:orientation="vertical"
+              android:weightSum="4"
+              tools:context=".activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="56dp">
 
-        <ImageView
-            android:id="@+id/google_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="10dp"
-
-            android:contentDescription="@string/desc_google_icon"
-             />
 
         <TextView
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tela_de_login"
             android:gravity="center"
+            android:text="@string/tela_de_login"
             android:textColor="@android:color/white"
-            android:textSize="36sp" />
+            android:textSize="36sp"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/avatar"
+            android:id="@+id/login_avatar"
             android:layout_width="142dp"
             android:layout_height="142dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:src="@android:drawable/sym_def_app_icon" />
+            android:src="@drawable/ic_account_circle"/>
 
         <TextView
             android:id="@+id/status"
@@ -46,7 +39,8 @@
             android:layout_height="wrap_content"
             android:text="@string/signed_out"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:paddingTop="16dp"
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/detail"
@@ -58,7 +52,7 @@
             android:padding="10dp"
             android:scrollbars="vertical"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
     </LinearLayout>
 
@@ -75,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="visible"
-            tools:visibility="gone" />
+            tools:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/sign_out_and_disconnect"
@@ -94,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/sign_out"
-                android:theme="@style/ThemeOverlay.MyDarkButton" />
+                android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
             <Button
                 android:id="@+id/disconnect_button"
@@ -102,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/disconnect"
-                android:theme="@style/ThemeOverlay.MyDarkButton" />
+                android:theme="@style/ThemeOverlay.MyDarkButton"/>
         </LinearLayout>
 
     </RelativeLayout>

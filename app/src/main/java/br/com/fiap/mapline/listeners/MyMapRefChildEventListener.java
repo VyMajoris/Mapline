@@ -1,7 +1,6 @@
 package br.com.fiap.mapline.listeners;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -143,7 +142,9 @@ public class MyMapRefChildEventListener implements ChildEventListener {
                             polylineHashMap.put(parentKey, polyTempArray);
 
                             if (!polylineOptionsMap.get(parentKey).getPoints().isEmpty()) {
-                                markerHashMap.put(parentKey, map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))));
+                                markerHashMap.put(parentKey, map.addMarker(new MarkerOptions()
+                                        .position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))
+                                        .icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(avatarHashMap.get(parentKey), context)))));
                             }
 
                         } catch (Exception e) {

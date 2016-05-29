@@ -57,7 +57,11 @@ public class MyFirebaseListenerService extends Service implements MyFirebaseMapU
 
                     if (!dataSnapshot.getKey().equals(MyFirebaseMapUtil.polylineId)) {
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext).setSmallIcon(R.drawable.ic_account_circle).setContentTitle("Nova Linha Criada!").setContentText(name.textValue() + " Acabou de criar uma iniciar nova linha ").setLargeIcon(bitmap);
+                        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
+                                .setSmallIcon(R.drawable.ic_account_circle)
+                                .setContentTitle("Nova Linha Criada!")
+                                .setContentText(name.textValue() + " Acabou de criar uma iniciar nova linha ")
+                                .setLargeIcon(bitmap);
 
                         notificationManager.notify(1001, notificationBuilder.build());
                     }

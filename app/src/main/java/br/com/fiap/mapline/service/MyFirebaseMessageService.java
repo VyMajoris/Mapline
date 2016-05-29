@@ -6,9 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -36,12 +36,8 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         // If the application is in the foreground handle both data and notification messages here.
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-
-
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
-
-
         sendNotification(remoteMessage);
 
     }
@@ -60,13 +56,16 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+                .setSmallIcon(R.drawable.small_icon3)
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setColor(Color.rgb(72,159,219))
+                .setContentIntent(pendingIntent)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setVibrate(new long[]{1, 1, 1});
+        //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
 
-        notificationBuilder.setPriority(Notification.PRIORITY_HIGH);
-        if (Build.VERSION.SDK_INT >= 21) notificationBuilder.setVibrate(new long[0]);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
