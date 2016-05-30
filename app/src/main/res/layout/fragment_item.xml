@@ -1,9 +1,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  xmlns:autofit="http://schemas.android.com/tools"
+                                                 android:paddingBottom="16dp"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="wrap_content"
-                                                 android:padding="16dp"
     >
 
     <android.support.v7.widget.CardView
@@ -13,13 +13,11 @@
 
         >
 
-
         <RelativeLayout
             android:id="@+id/cardheader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-
             >
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -32,11 +30,11 @@
 
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/cardname"
+                style="@style/card_name"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-
                 android:layout_alignTop="@+id/avatar"
-
+                android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_toEndOf="@+id/avatar"
                 android:layout_toRightOf="@+id/avatar"
@@ -44,20 +42,15 @@
                 android:gravity="bottom"
                 android:maxLines="1"
                 android:singleLine="true"
-
-                android:textColor="@color/blue_grey_600"
-                android:textSize="40sp"
-
                 autofit:minTextSize="16sp"
-                android:fontFamily="sans-serif-medium"
+
                 />
 
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/cardemail"
+                style="@style/card_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:gravity="top"
                 android:layout_alignBottom="@+id/avatar"
                 android:layout_alignEnd="@+id/cardname"
                 android:layout_alignLeft="@+id/cardname"
@@ -65,11 +58,9 @@
                 android:layout_alignStart="@+id/cardname"
                 android:layout_below="@+id/cardname"
                 android:layout_toRightOf="@+id/fab_email"
+                android:gravity="top"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/blue_grey_600"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif"
                 autofit:minTextSize="1sp"/>
 
 
@@ -77,11 +68,8 @@
                 android:id="@+id/fab_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_alignEnd="@+id/cardname"
                 android:layout_alignRight="@+id/cardname"
-
-
                 android:layout_alignWithParentIfMissing="false"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
@@ -94,7 +82,6 @@
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-
                 android:layout_below="@+id/avatar"
                 android:layout_marginTop="8dp"
                 app:liteMode="true"

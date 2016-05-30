@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -13,6 +13,21 @@
     <style name="myMenuItem" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@android:color/primary_text_dark</item>
         <item name="android:color">@android:color/primary_text_dark</item>
+    </style>
+
+    <style name="mainPadding">
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="card_email">
+        <item name="android:textColor">@color/blue_grey_600</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    <style name="card_name">
+        <item name="android:textColor">@color/blue_grey_600</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 
@@ -29,5 +44,6 @@
         <item name="colorButtonNormal">@color/blue_grey_500</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
 
 </resources>
