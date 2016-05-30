@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Options</string>
+    <string name="disconnect">Desconectar</string>
+    <string name="lista_de_linhas">Lista de Linhas</string>
+    <string name="loading">Carregando</string>
+    <string name="login_needed">Você precisa estar logado para criar novas linhas!</string>
+    <string name="main_string">Faça o login e clique no mapa para criar linhas</string>
+    <string name="mapa">Mapa</string>
+    <string name="minha_conta">Minha Conta</string>
+    <string name="name_placeholder">Faça o Login!</string>
+    <string name="navigation_drawer_close">Fechar</string>
+    <string name="navigation_drawer_open">Abrir Menu</string>
+    <string name="no_more_points">Não há mais pontos para deletar</string>
+    <string name="sign_out">Signout</string>
+    <string name="signed_in_fmt">Logado como: %s</string>
+    <string name="signed_out">Deslogado</string>
+    <string name="tela_de_login">Tela de Login</string>
+    <string name="item_fragment_title">Lista de Linhas</string>
+    <string name="login_fragment_title">Login</string>
+    <string name="mymap_fragment_title">Mapa</string>
+</resources>

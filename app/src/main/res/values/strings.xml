@@ -1,27 +1,23 @@
 <resources>
-    <string name="app_name">Mapline</string>
-    <string name="title_activity_main">Mapline</string>
+    <string name="app_name" translatable="false">Mapline</string>
+    <string name="title_activity_main" translatable="false">Mapline</string>
 
-    <string name="navigation_drawer_open">Abrir navegador</string>
-    <string name="navigation_drawer_close">Fechar</string>
+    <string name="navigation_drawer_open">Open Menu</string>
+    <string name="navigation_drawer_close">Close</string>
 
-    <string name="action_settings">Opções</string>
-    <string name="minha_conta">Minha Conta</string>
-    <string name="mapa">Mapa</string>
+    <string name="action_settings">Options</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
 
     <!-- Sign-in status messages -->
-    <string name="signed_in_fmt">Logado como: %s</string>
-    <string name="signed_out">Deslogado</string>
-    <string name="loading">Carregando…</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="loading">Loading</string>
 
     <!-- Google Play Services error for Toast -->
 
     <!-- Button labels -->
-    <string name="sign_out">Deslogar</string>
-    <string name="disconnect">Desconectar</string>
+    <string name="sign_out">Signout</string>
 
     <!-- TODO: CLIENT IDS!!!! -->
     <!--FIAP -->
@@ -36,12 +32,20 @@
     </string>
 
 
-    <string name="login_needed">Você precisa estar logado para criar novas linhas!</string>
-    <string name="no_more_points">Não há mais pontos para deletar</string>
-    <string name="lista_de_linhas">Lista de Linhas</string>
-    <string name="tela_de_login">Tela de Login</string>
-    <string name="name_placeholder">Faça o Login!</string>
-    <string name="email_placeholder">Google-Firebase-Fiap</string>
-    <string name="main_string">Faça o login e clique no mapa para criar linhas</string>
+    <string name="no_more_points">No more points to delete</string>
+    <string name="lista_de_linhas">List of Lines</string>
+    <string name="tela_de_login">Login Screen</string>
+    <string name="name_placeholder">Please Login!</string>
+    <string name="email_placeholder" translatable="false">Google-Firebase-Fiap</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="login_needed">You need to be looged to create new lines!</string>
+    <string name="main_string">Login and click on the map to create lines and stuff</string>
+    <string name="mapa">Map</string>
+    <string name="minha_conta">My Account</string>
+    <string name="signed_in_fmt">Logged as: %s</string>
+    <string name="ok" translatable="false">OK!</string>
+    <string name="mymap_fragment_title">Map</string>
+    <string name="login_fragment_title">Login</string>
+    <string name="item_fragment_title">List of Lines</string>
 
 </resources>

@@ -52,7 +52,7 @@
             android:background="#d1171717"
             android:clickable="true"
 
-            android:text="OK!"
+            android:text="@string/ok"
             android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"

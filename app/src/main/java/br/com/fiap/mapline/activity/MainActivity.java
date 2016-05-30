@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,9 +65,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ScalableVideoView mVideoView;
     private boolean isMapReady = false;
     NavigationView navigationView;
+    boolean isAllHidden = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         this.savedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
         //Configs do video
         mVideoView = (ScalableVideoView) findViewById(R.id.main_background_videoview);
         try {
@@ -105,12 +109,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //Configs do Navigation Drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        findViewById(R.id.main_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            drawer.openDrawer(Gravity.LEFT);
+            }
+        });
 
     }
 
@@ -128,12 +138,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Botão de retorno
     @Override
     public void onBackPressed() {
+        getSupportActionBar().setTitle(R.string.title_activity_main);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+
+
+        if (drawer.isDrawerOpen(GravityCompat.START) || !isAllHidden) {
             drawer.closeDrawer(GravityCompat.START);
+            try {
+                handleFragments(null, Lists.newArrayList("map", "login","list"), null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            isAllHidden = true;
         } else {
             super.onBackPressed();
         }
+
+
     }
 
 
@@ -219,12 +240,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-
         try {
-            //Some com o botão e o texto da activity
-            findViewById(R.id.main_button).setVisibility(View.GONE);
-            findViewById(R.id.main_info).setVisibility(View.GONE);
+
+
             if (id == R.id.nav_map) {
                 //Mapa selecionado
                 handleFragments("map", Lists.newArrayList("login", "list"), MyMapFragment.class);
@@ -248,22 +266,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //da show nos fragments que já estão adicionados
     //da add nos fragemnts que ainda não estão adicionados
     //da hide nos outros fragments que estão adicionados para mostrar o fragment em questão
-    public <T extends Fragment> void handleFragments(String toShow, List<String> toHide, Class<T> fragment) throws Exception {
+    public <T extends Fragment> void  handleFragments(String toShow, List<String> toHide, Class<T> fragment) throws Exception {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(toShow) != null) {
-            //if the fragment exists, show it.
-            fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag(toShow)).commit();
-        } else {
-            //if the fragment does not exist, add it to fragment manager.
-            fragmentManager.beginTransaction().add(R.id.content, fragment.getConstructor().newInstance(), toShow).commit();
+
+
+
+
+        if (toShow != null){
+            //Some com o botão e o texto da activity
+            findViewById(R.id.main_button).setVisibility(View.GONE);
+            findViewById(R.id.main_info).setVisibility(View.GONE);
+            if (fragmentManager.findFragmentByTag(toShow) != null) {
+                //if the fragment exists, show it.
+
+                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag(toShow)).commit();
+            } else {
+                //if the fragment does not exist, add it to fragment manager.
+                fragmentManager.beginTransaction().add(R.id.content, fragment.getConstructor().newInstance(), toShow).commit();
+            }
+        }else{
+
+            findViewById(R.id.main_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.main_info).setVisibility(View.VISIBLE);
         }
         for (String toHideString : toHide) {
             if (fragmentManager.findFragmentByTag(toHideString) != null) {
+
                 //if the other fragment is visible, hide it.
                 fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag(toHideString)).commit();
             }
         }
+
     }
 
     //Callback do OnMapReady do MyMapFragment (custom)
