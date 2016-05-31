@@ -55,7 +55,7 @@
         </service>
 
         <receiver
-            android:name=".MyNotificationIntentReceiver"
+            android:name=".BroadcastReceiver.MyNotificationIntentReceiver"
             android:enabled="true"
             android:exported="true">
         </receiver>

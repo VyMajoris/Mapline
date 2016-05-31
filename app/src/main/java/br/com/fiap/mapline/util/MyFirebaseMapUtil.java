@@ -94,7 +94,6 @@ public class MyFirebaseMapUtil {
 
 
     public static void addMyPoint(LatLng latLng) {
-
         if (myPolylineOptions == null) {
             myPolylineOptions = new PolylineOptions();
             myPolylineOptions.color(color);
@@ -109,7 +108,6 @@ public class MyFirebaseMapUtil {
         myPolylineOptions.add(latLng);
         myMarker = map.addMarker(new MarkerOptions().position(MyMapUtil.getCenter(myPolylineOptions.getPoints())).icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(mPrefs.getString("avatar", null), context))));
 
-
         myPolilines.add(map.addPolyline(myPolylineOptions));
         MyFirebaseMapUtil.myLatLngRefList.add(myLatLngRef);
         Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
@@ -120,17 +118,13 @@ public class MyFirebaseMapUtil {
         mPrefs.edit().putString("myPolylineOptions", new Gson().toJson(myPolylineOptions)).apply();
         Set<String> myLatLngRefKeySet = new HashSet<>();
         for (Firebase latLngRef : MyFirebaseMapUtil.myLatLngRefList) {
-            System.out.println("ADDING KEY: " + latLngRef);
             myLatLngRefKeySet.add(latLngRef.getKey());
         }
         mPrefs.edit().putStringSet("myLatLngRefKeySet", myLatLngRefKeySet).putString("myPolylineRefKey", MyFirebaseMapUtil.myPolylineRef.getKey()).apply();
-
-
     }
 
 
     public static void removeLastMyPoint() {
-
         for (Polyline line : myPolilines) {
             line.remove();
         }

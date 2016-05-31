@@ -30,7 +30,6 @@ import br.com.fiap.mapline.util.MyMapUtil;
  */
 public class MyFabLastClickListener implements  View.OnClickListener{
 
-
     Context context;
     SharedPreferences mPrefs;
     List<Polyline> myPolilines;
@@ -59,7 +58,6 @@ public class MyFabLastClickListener implements  View.OnClickListener{
     @Override
     public void onClick(View view) {
         if (mPrefs.getBoolean("isLogged", false)) {
-
 
             if (!myLatLngRefList.isEmpty()) {
 

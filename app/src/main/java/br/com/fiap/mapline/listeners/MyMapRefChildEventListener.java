@@ -61,54 +61,41 @@ public class MyMapRefChildEventListener implements ChildEventListener {
             snap.child("details").getRef().addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     int color = Integer.valueOf(dataSnapshot.child("color").getValue().toString());
                     String avatar = dataSnapshot.child("avatar").getValue().toString();
                     colorHashMap.put(dataSnapshot.getRef().getParent().getKey(), color);
                     avatarHashMap.put(dataSnapshot.getRef().getParent().getKey(), avatar);
-
-
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
+                public void onCancelled(FirebaseError firebaseError) {}
             });
 
             mapRef.child(snap.getKey()).addChildEventListener(new ChildEventListener() {
 
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-
                     String parentKey = dataSnapshot.getRef().getParent().getKey();
                     try {
                         if (!dataSnapshot.getKey().equals("details")) {
-
                             if (markerHashMap.get(parentKey) != null) {
                                 markerHashMap.get(parentKey).remove();
-
                             }
 
                             LatLng latLng = new Gson().fromJson((String) dataSnapshot.getValue(), LatLng.class);
-
                             polylineOptionsMap.put(parentKey, polylineOptionsMap.get(parentKey).color(colorHashMap.get(parentKey)).add(latLng));
-
                             List<Polyline> polyTempArray = polylineHashMap.get(parentKey);
                             polyTempArray.add(map.addPolyline(polylineOptionsMap.get(parentKey)));
                             polylineHashMap.put(parentKey, polyTempArray);
                             List<LatLng> latlngTempArray = latLngHashMap.get(parentKey);
                             latlngTempArray.add(latLng);
                             latLngHashMap.put(parentKey, latlngTempArray);
-
-
                             markerHashMap.put(parentKey, map.addMarker(new MarkerOptions()
                                     .position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))
                                     .icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(avatarHashMap.get(parentKey), context)))));
                         }
 
                     } catch (Exception e) {
-                        System.out.println("ERROR KEY" + dataSnapshot.getKey());
                         e.printStackTrace();
                     }
                 }
@@ -146,36 +133,29 @@ public class MyMapRefChildEventListener implements ChildEventListener {
                                         .position(MyMapUtil.getCenter(latLngHashMap.get(parentKey)))
                                         .icon(BitmapDescriptorFactory.fromBitmap(BitMapUtil.getMarkerBitmapFromView(avatarHashMap.get(parentKey), context)))));
                             }
-
                         } catch (Exception e) {
-                            System.out.println("key type" + dataSnapshot.getKey());
+
                         }
                     }
                 }
 
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
+                public void onCancelled(FirebaseError firebaseError) {}
             });
 
         }
     }
 
     @Override
-    public void onChildChanged(DataSnapshot snap, String s) {
-
-    }
+    public void onChildChanged(DataSnapshot snap, String s) {}
 
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
 
         if (!dataSnapshot.getKey().equals(polylineId) || dataSnapshot.getKey().equals("color")) {
-
             for (Polyline polyline : polylineHashMap.get(dataSnapshot.getKey())) {
                 polyline.remove();
             }
@@ -184,14 +164,9 @@ public class MyMapRefChildEventListener implements ChildEventListener {
     }
 
     @Override
-    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-    }
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
     @Override
-    public void onCancelled(FirebaseError firebaseError) {
-
-    }
-
+    public void onCancelled(FirebaseError firebaseError) {}
 
 }

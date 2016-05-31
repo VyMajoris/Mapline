@@ -88,11 +88,8 @@ public class ItemFragment extends Fragment {
         mapRef = fireRef.child("map");
         // Set the adapter
         if (view instanceof RecyclerView) {
-
-            System.out.println("RECYCLER");
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-
             recyclerView.setHasFixedSize(true);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));

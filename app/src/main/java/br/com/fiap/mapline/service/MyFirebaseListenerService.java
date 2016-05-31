@@ -25,8 +25,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
-import br.com.fiap.mapline.MyNotificationIntentReceiver;
-import br.com.fiap.mapline.OnNotificationRemoved;
+import br.com.fiap.mapline.BroadcastReceiver.MyNotificationIntentReceiver;
+import br.com.fiap.mapline.util.OnNotificationRemoved;
 import br.com.fiap.mapline.R;
 import br.com.fiap.mapline.util.BitMapUtil;
 import br.com.fiap.mapline.util.MyFirebaseMapUtil;
@@ -62,7 +62,7 @@ public class MyFirebaseListenerService extends Service implements MyFirebaseMapU
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext);
             notificationBuilder.setTicker(params[0].getString("name ") + getString(R.string.new_line_notif_ticker));
-            notificationBuilder.setSmallIcon(R.drawable.small_icon2);
+            notificationBuilder.setSmallIcon(R.drawable.small_icon);
             notificationBuilder.setContentTitle(getString(R.string.new_line_notif_title));
             notificationBuilder.setDeleteIntent(getDeleteIntent());
             notificationBuilder.setLargeIcon(bitmap);
@@ -104,7 +104,7 @@ public class MyFirebaseListenerService extends Service implements MyFirebaseMapU
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(mContext)
                     .setTicker(params[0].getString("name") + " " + getString(R.string.remove_line_notif_ticker))
-                    .setSmallIcon(R.drawable.small_icon2)
+                    .setSmallIcon(R.drawable.small_icon)
                     .setContentTitle(getString(R.string.remove_line_notif_title))
                     .setLargeIcon(bitmap)
                     .setContentText(params[0].getString("name") + " " + getString(R.string.removed_line_notif_text));
@@ -148,16 +148,13 @@ public class MyFirebaseListenerService extends Service implements MyFirebaseMapU
                     JsonNode name = details.get("name");
                     JsonNode avatar = details.get("avatar");
 
-
                     lastNotificationBundle = new Bundle();
                     lastNotificationBundle.putString("name", name.textValue());
                     lastNotificationBundle.putString("avatar", avatar.asText());
                     lastNotificationBundle.putString("dataSnapKey", dataSnapshot.getKey());
 
-
                     names.add(name.textValue());
                     new NewLineNotificationTask().execute(lastNotificationBundle);
-
 
                 }
             }
