@@ -76,7 +76,7 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
         view = inflater.inflate(R.layout.fragment_map, container, false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.mymap_fragment_title);
         final SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
-        mPrefs = getActivity().getSharedPreferences("Google_firebase", getActivity().MODE_PRIVATE);
+        mPrefs = getActivity().getSharedPreferences(getString(R.string.sharedpreferences_id), ((AppCompatActivity) getActivity()).MODE_PRIVATE);
 
         this.setRetainInstance(true);
         mapFragment.getMapAsync(this);
@@ -135,8 +135,6 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
         mMap = map;
 
         final FloatingActionButton fabLast = (FloatingActionButton) view.findViewById(R.id.deletar_last_button);
-        // fabLast.setOnClickListener(new MyFabLastClickListener(fam, mPrefs, myPolilines, myMarker, MyFirebaseMapUtil.myLatLngRefList, myPolylineOptions, map, color, MyFirebaseMapUtil.myPolylineRef));
-
         fabLast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,24 +159,24 @@ public class MyMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("ON PAUSE");
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        System.out.println("ON STOP");
+
     }
 
     @Override
     public void onResume() {
         super.onStop();
-        System.out.println("ON RESUME");
+
     }
 
     @Override
     public void onDestroy() {
-        System.out.println("On Destroy");
+
         super.onDestroy();
         if (mPrefs.getBoolean("isLogged", false)) {
             fam.close(true);

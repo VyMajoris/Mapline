@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import br.com.fiap.mapline.R;
+
 /**
  * Created by VyMajoriss on 5/18/2016.
  */
@@ -28,7 +30,7 @@ public class MyFirebaseMapUtil {
     static OnMyFirebaseReady mCallback;
     public static Random rnd = new Random();
     public static int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-    public static Firebase mapRef = new Firebase("https://mapline-android.firebaseio.com/map");
+    public static Firebase mapRef;
     public static Firebase myPolylineRef;
     public static List<Firebase> myLatLngRefList = new ArrayList<>();
     public static String polylineId;
@@ -44,6 +46,7 @@ public class MyFirebaseMapUtil {
     public static void init(Context context, SharedPreferences mPrefs) {
         MyFirebaseMapUtil.context = context;
         MyFirebaseMapUtil.mPrefs = mPrefs;
+        mapRef = new Firebase(context.getString(R.string.fire_map_ref));
 
 
         try {
@@ -66,8 +69,10 @@ public class MyFirebaseMapUtil {
             Set<String> myLatLngRefKeySet = mPrefs.getStringSet("myLatLngRefKeySet", null);
             if (myLatLngRefKeySet != null) {
                 for (String key : myLatLngRefKeySet) {
+                    if (myPolylineRef!= null){
+                        myLatLngRefList.add(myPolylineRef.child(key));
+                    }
 
-                    myLatLngRefList.add(myPolylineRef.child(key));
                 }
             }
         }
@@ -110,10 +115,10 @@ public class MyFirebaseMapUtil {
         Details details = new Details(color, mPrefs.getString("nome", ""), myMarker.getPosition(), mPrefs.getString("avatar", ""), mPrefs.getString("email", ""));
         MyFirebaseMapUtil.myPolylineRef.child("details").setValue(details);
         myLatLngRef.setValue(new Gson().toJson(latLng));
-        Set<String> myLatLngJsonSet = new HashSet<String>();
+        Set<String> myLatLngJsonSet = new HashSet<>();
         myLatLngJsonSet.add(new Gson().toJson(latLng));
         mPrefs.edit().putString("myPolylineOptions", new Gson().toJson(myPolylineOptions)).apply();
-        Set<String> myLatLngRefKeySet = new HashSet<String>();
+        Set<String> myLatLngRefKeySet = new HashSet<>();
         for (Firebase latLngRef : MyFirebaseMapUtil.myLatLngRefList) {
             System.out.println("ADDING KEY: " + latLngRef);
             myLatLngRefKeySet.add(latLngRef.getKey());
@@ -169,7 +174,7 @@ public class MyFirebaseMapUtil {
         }
 
 
-        Set<String> myLatLngJsonSet = new HashSet<String>();
+        Set<String> myLatLngJsonSet = new HashSet<>();
 
 
         for (LatLng latlng : myPolylineOptions.getPoints()) {
@@ -178,7 +183,7 @@ public class MyFirebaseMapUtil {
 
         mPrefs.edit().putString("myPolylineOptions", new Gson().toJson(myPolylineOptions)).apply();
 
-        Set<String> myLatLngRefKeySet = new HashSet<String>();
+        Set<String> myLatLngRefKeySet = new HashSet<>();
         for (Firebase latLngRef : myLatLngRefList) {
             myLatLngRefKeySet.add(latLngRef.getKey());
         }

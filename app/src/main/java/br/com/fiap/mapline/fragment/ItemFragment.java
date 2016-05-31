@@ -83,7 +83,7 @@ public class ItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
-        fireRef = new Firebase("https://mapline-android.firebaseio.com/");
+        fireRef = new Firebase(getString(R.string.fire_ref));
 
         mapRef = fireRef.child("map");
         // Set the adapter
@@ -244,8 +244,8 @@ public class ItemFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", textEmail.getText().toString(), null));
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "FIAP - Android");
-            emailIntent.putExtra(Intent.EXTRA_TEXT, "Github: https://github.com/vymajoris/Mapline");
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, mainActivity.getString(R.string.email_title));
+            emailIntent.putExtra(Intent.EXTRA_TEXT, mainActivity.getString(R.string.email_content));
             mainActivity.startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
         }

@@ -19,4 +19,15 @@
     <string name="item_fragment_title">Lista de Linhas</string>
     <string name="login_fragment_title">Login</string>
     <string name="mymap_fragment_title">Mapa</string>
+    <string name="new_line_notif_1plus_summary">Linhas Criadas </string>
+    <string name="new_line_notif_html_line"><![CDATA[<strong> %s </strong> criou uma nova linha]]></string>
+    <string name="new_line_notif_line_4plus_summary">Mais linhas foram criadas</string>
+    <string name="new_line_notif_one_summary">Linha Criada</string>
+    <string name="new_line_notif_ticker"> Acabou de criar uma nova linha</string>
+    <string name="new_line_notif_title">Nova Linha Criada!</string>
+    <string name="remove_line_notif_ticker">Deletou sua linha</string>
+    <string name="remove_line_notif_title">Linha Deletada</string>
+    <string name="removed_line_notif_text">Deletou sua linha</string>
+    <string name="auth_failed">Falha na autenticação</string>
+    <string name="Authenticating_firebase">Autenticando com Firebase...</string>
 </resources>

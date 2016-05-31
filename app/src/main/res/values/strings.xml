@@ -1,27 +1,20 @@
 <resources>
     <string name="app_name" translatable="false">Mapline</string>
     <string name="title_activity_main" translatable="false">Mapline</string>
-
     <string name="navigation_drawer_open">Open Menu</string>
     <string name="navigation_drawer_close">Close</string>
-
     <string name="action_settings">Options</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
 
     <!-- Sign-in status messages -->
     <string name="signed_out">Signed Out</string>
     <string name="loading">Loading</string>
 
-    <!-- Google Play Services error for Toast -->
 
     <!-- Button labels -->
     <string name="sign_out">Signout</string>
 
     <!-- TODO: CLIENT IDS!!!! -->
     <!--FIAP -->
-
 
     <!--CASA -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
@@ -32,13 +25,15 @@
     </string>
 
 
+
+
     <string name="no_more_points">No more points to delete</string>
     <string name="lista_de_linhas">List of Lines</string>
     <string name="tela_de_login">Login Screen</string>
     <string name="name_placeholder">Please Login!</string>
     <string name="email_placeholder" translatable="false">Google-Firebase-Fiap</string>
     <string name="disconnect">Disconnect</string>
-    <string name="login_needed">You need to be looged to create new lines!</string>
+    <string name="login_needed">You need to be loged to create new lines!</string>
     <string name="main_string">Login and click on the map to create lines and stuff</string>
     <string name="mapa">Map</string>
     <string name="minha_conta">My Account</string>
@@ -47,5 +42,21 @@
     <string name="mymap_fragment_title">Map</string>
     <string name="login_fragment_title">Login</string>
     <string name="item_fragment_title">List of Lines</string>
+    <string name="new_line_notif_ticker"> Just created a new line</string>
+    <string name="new_line_notif_one_summary">Line Created</string>
+    <string name="new_line_notif_1plus_summary"> Created Lines</string>
+    <string name="new_line_notif_html_line"><![CDATA[<strong> %s </strong> created a new line]]></string>
+    <string name="new_line_notif_line_4plus_summary"> More lines were created</string>
+    <string name="new_line_notif_title">New Line Created</string>
+    <string name="removed_line_notif_text">Deleted his line</string>
+    <string name="remove_line_notif_ticker">Deleted his line</string>
+    <string name="remove_line_notif_title">Line Deleted</string>
+    <string name="email_title" translatable="false">FIAP - Android</string>
+    <string name="sharedpreferences_id" translatable="false">Google_firebase</string>
+    <string name="email_content" translatable="false">Github: https://github.com/vymajoris/Mapline</string>
+    <string name="fire_ref" translatable="false">https://mapline-android.firebaseio.com/</string>
+    <string name="fire_map_ref" translatable="false">https://mapline-android.firebaseio.com/map</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="Authenticating_firebase">Authenticating with Firebase...</string>
 
 </resources>

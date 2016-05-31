@@ -1,30 +1,22 @@
 package br.com.fiap.mapline.activity;
 
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,6 +29,7 @@ import com.yqritc.scalablevideoview.ScalableVideoView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.fiap.mapline.R;
@@ -80,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         //Pega o SharedPreferences
-        mPrefs = getSharedPreferences("Google_firebase", MODE_PRIVATE);
+        mPrefs = getSharedPreferences(getString(R.string.sharedpreferences_id), MODE_PRIVATE);
 
         //Seta o context para o firebase
         Firebase.setAndroidContext(this);
@@ -118,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            drawer.openDrawer(Gravity.LEFT);
+            drawer.openDrawer(GravityCompat.START);
             }
         });
 
@@ -145,7 +138,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START) || !isAllHidden) {
             drawer.closeDrawer(GravityCompat.START);
             try {
-                handleFragments(null, Lists.newArrayList("map", "login","list"), null);
+                ArrayList<String> fragList =  Lists.newArrayList("map", "login","list");
+                handleFragments(null,fragList, null);
+                for (int i = 0; i < fragList.size(); i++) {
+                    navigationView.getMenu().getItem(i).setChecked(false);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -214,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             emailView.setText(this.email);
         } else {
             Picasso.with(this).load(R.drawable.fiap).into(avatarView);
-            nomeView.setText("Faça o Login!");
-            emailView.setText("Google-Firebase-Fiap");
+            nomeView.setText(getString(R.string.name_placeholder));
+            emailView.setText(getString(R.string.email_placeholder));
         }
         return true;
     }
@@ -364,6 +362,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Thread t = new Thread() {
             public void run() {
                 startService(new Intent(getApplicationContext(), MyFirebaseListenerService.class));
+
             }
         };
         t.start();

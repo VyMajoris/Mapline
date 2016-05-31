@@ -64,11 +64,11 @@ public class MyFirebaseMessageService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setVibrate(new long[]{1, 1, 1});
-        //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
+
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(4981200, notificationBuilder.build());
     }
 
 }

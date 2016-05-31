@@ -79,7 +79,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.login_fragment_title);
-        fireRef = new Firebase("https://mapline-android.firebaseio.com/");
+        fireRef = new Firebase(getString(R.string.fire_ref));
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -99,8 +99,8 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
         view = inflater.inflate(R.layout.fragment_login, container, false);
 
         mAuthProgressDialog = new ProgressDialog(getActivity());
-        mAuthProgressDialog.setTitle("Loading");
-        mAuthProgressDialog.setMessage("Authenticating with Firebase...");
+        mAuthProgressDialog.setTitle(getString(R.string.loading));
+        mAuthProgressDialog.setMessage(getString(R.string.Authenticating_firebase));
         mAuthProgressDialog.setCancelable(false);
 
 
@@ -215,7 +215,6 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                 // [END_EXCLUDE]
             }
         }
-//
     }
 
 
@@ -236,7 +235,7 @@ public class LoginFragment extends Fragment implements GoogleApiClient.OnConnect
                 // signed in user can be handled in the listener.
                 if (!task.isSuccessful()) {
                     Log.w(TAG, "signInWithCredential", task.getException());
-                    Toast.makeText(getContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.auth_failed, Toast.LENGTH_SHORT).show();
                 }
                 // [START_EXCLUDE]
                 hideProgressDialog();

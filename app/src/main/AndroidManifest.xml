@@ -43,8 +43,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>
 
-        <service
-            android:name=".service.MyFirebaseMessageService">
+        <service android:name=".service.MyFirebaseMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
@@ -54,6 +53,12 @@
             android:enabled="true"
             android:exported="true">
         </service>
+
+        <receiver
+            android:name=".MyNotificationIntentReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
     </application>
 
 </manifest>
