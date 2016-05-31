@@ -102,14 +102,12 @@ public class ItemFragment extends Fragment {
                 @Override
                 protected void populateViewHolder(MyViewHolder myViewHolder, JsonNode jsonNode, int i) {
 
-
                     JsonNode details = jsonNode.get("details");
                     JsonNode name = details.get("name");
                     JsonNode color = details.get("color");
                     JsonNode email = details.get("email");
                     JsonNode center = details.get("center");
                     JsonNode avatar = details.get("avatar");
-
 
                     if (color != null) {
                         myViewHolder.textName.setTextColor(color.asInt());
@@ -122,17 +120,14 @@ public class ItemFragment extends Fragment {
 
                     if (email != null) {
                         myViewHolder.textEmail.setText(email.textValue());
-
                     }
+
                     if (avatar != null) {
                         Picasso.with(getContext()).load(avatar.textValue()).error(R.drawable.fiap).into(myViewHolder.avatar);
-
                     }
-
                     if (center != null) {
                         LatLng latLng = new Gson().fromJson(center.toString(), LatLng.class);
                         myViewHolder.latLng = latLng;
-
 
                         if (myViewHolder.isMapReady) {
                             myViewHolder.marker.remove();
@@ -140,8 +135,6 @@ public class ItemFragment extends Fragment {
                             myViewHolder.addMarker(latLng);
                         }
                     }
-
-
                 }
             };
 
@@ -203,7 +196,6 @@ public class ItemFragment extends Fragment {
                 } else {
                     marker = googleMap.addMarker(new MarkerOptions().position(latLng));
                 }
-
 
                 CameraUpdate center = CameraUpdateFactory.newLatLng(latLng);
                 CameraUpdate zoom = CameraUpdateFactory.zoomTo(4);

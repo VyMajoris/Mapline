@@ -7,7 +7,10 @@
     android:name="br.com.fiap.mapline.ItemFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/mainPadding"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragment.ItemFragment"
     tools:listitem="@layout/fragment_item"/>

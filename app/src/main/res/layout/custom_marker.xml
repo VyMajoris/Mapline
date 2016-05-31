@@ -21,10 +21,9 @@
         android:layout_height="22dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-
         android:layout_gravity="center"
         android:layout_marginTop="7dp"
-        android:background="@color/white"/>
+       />
 
 
 </RelativeLayout>
